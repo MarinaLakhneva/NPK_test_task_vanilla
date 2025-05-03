@@ -1,9 +1,8 @@
 import './style.css'
+import './components/ButtonOpenModal'
 
 document.querySelector('#app').innerHTML = `
   <div>
-    <h1>NPK!</h1>
+		<btn-open></btn-open>
   </div>
 `
-
-
