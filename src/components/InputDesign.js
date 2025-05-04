@@ -3,6 +3,8 @@ class InputDesign extends HTMLElement {
 		super();
 		this.attachShadow({ mode: 'open' });
 		this.render();
+		this.initializeElements();
+		this.setupEventListeners();
 	}
 	
 	render() {
@@ -20,10 +22,22 @@ class InputDesign extends HTMLElement {
 				transition: all ease 400ms;
 			}
 			
+			.hover{
+				transition: all ease 400ms;
+			}
+			
+			.modal_input_container.hover {
+				background-color: #BBB9D2;
+			}
+			
 			.modal_input_container:hover{
 				border: 1px solid #5F5CF0;
 			}
 			
+			.modal_input_container.active {
+        border-color: #5F5CF0;
+      }
+
 			.input_name_file{
 			  border: none;
         outline: none;
@@ -31,13 +45,17 @@ class InputDesign extends HTMLElement {
 				font-weight: 500;
 				font-size: 17.5px;
 				color: #5F5CF0;
-				transition: background-color 0.3s ease;
+				transition: all ease 400ms;
 			}
 			
 			.input_name_file::placeholder {
 				font-weight: 500;
 				font-size: 17.5px;
 				color: #A5A5A5;
+			}
+			
+			.input_name_file.hover {
+				background-color: #BBB9D2;
 			}
 			
 			.btn_clear{
@@ -72,39 +90,82 @@ class InputDesign extends HTMLElement {
 			</div>
 			<style>${styles}</style>
 		`;
-		
-		const clearButton = this.shadowRoot.querySelector('.btn_clear');
-		clearButton.addEventListener('click', () => {
-			if (this.inputElement) {
-				this.inputElement.value = '';
-				this.dispatchEvent(new CustomEvent('input-change', {
-					detail: { value: '' },
-					bubbles: true,
-					composed: true
-				}));
-			} else {
-				console.error('Input element not found!');
-			}
-		});
-		
-
+	}
+	initializeElements() {
+		this.inputContainer = this.shadowRoot.querySelector('.modal_input_container');
 		this.inputElement = this.shadowRoot.querySelector('.input_name_file');
+		this.clearButton = this.shadowRoot.querySelector('.btn_clear');
 		
-		this.inputElement.addEventListener('input', (e) => {
-			const value = e.target.value;
-			
-			if (value.trim() === '') {
-				clearButton.style.cursor = 'auto';
-			} else {
-				clearButton.style.cursor = 'pointer';
+		this.setupEventListeners();
+		this.updateClearButton();
+	}
+	
+	setupEventListeners() {
+		this.clearButton.addEventListener('click', () => this.clearInput());
+		this.inputElement.addEventListener('input', (e) => this.handleInputChange(e));
+		
+		this.clearButton.addEventListener('mouseenter', () => {
+			if (this.inputElement.value.trim() !== '') {
+				this.inputElement.classList.add('hover');
+				this.inputContainer.classList.add('hover');
 			}
-			
-			this.dispatchEvent(new CustomEvent('input-change', {
-				detail: { value: e.target.value },
-				bubbles: true,
-				composed: true
-			}));
 		});
+		
+		this.clearButton.addEventListener('mouseleave', () => {
+			this.inputElement.classList.remove('hover');
+			this.inputContainer.classList.remove('hover');
+		});
+	}
+	
+	handleInputChange(event) {
+		const value = event.target.value;
+		this.updateClearButton(value);
+		
+		this.dispatchEvent(new CustomEvent('input-change', {
+			detail: { value },
+			bubbles: true,
+			composed: true
+		}));
+	}
+	
+	updateClearButton(value = '') {
+		this.clearButton.disabled = value.trim() === '';
+		this.clearButton.style.cursor = value.trim() === '' ? 'auto' : 'pointer';
+		
+		if (value.trim() !== '') {
+			this.inputContainer.classList.add('active');
+		} else {
+			this.inputContainer.classList.remove('active');
+		}
+	}
+	
+	clearInput() {
+		this.inputElement.value = '';
+		this.updateClearButton();
+		
+		this.inputElement.classList.remove('hover');
+		this.inputContainer.classList.remove('hover');
+		
+		this.dispatchEvent(new CustomEvent('input-change', {
+			detail: { value: '' },
+			bubbles: true,
+			composed: true
+		}));
+	}
+	
+	getInputValue() {
+		return this.inputElement.value;
+	}
+	
+	setInputValue(value) {
+		this.inputElement.value = value;
+		this.updateClearButton(value);
+		
+		this.dispatchEvent(new CustomEvent('input-change', {
+			detail: {value},
+			bubbles: true,
+			composed: true
+		}));
 	}
 }
 

@@ -10,6 +10,97 @@ class FileDropzone extends HTMLElement {
 		this.addEventListeners();
 	}
 	
+	startAnimation() {
+		this.offset = 0;
+		this.direction = 1;
+		
+		this.animationInterval = setInterval(() => {
+			this.offset += this.direction*0.5;
+			if (Math.abs(this.offset) >= 5) {
+				this.direction *= -1;
+			}
+			
+			const imgBack = this.shadowRoot.querySelector('.img_back');
+			const imgFront = this.shadowRoot.querySelector('.img_front');
+			
+			imgBack.style.transform = `translateY(${this.offset*0.5}px)`;
+			imgFront.style.transform = `translateY(-${this.offset*1.3}px)`;
+		}, 50);
+	}
+	
+	addEventListeners() {
+		const dropzone = this.shadowRoot.querySelector('.block_uploading_file');
+		const fileInput = this.shadowRoot.querySelector('#fileInput');
+		
+		dropzone.addEventListener('click', () => {
+			fileInput.click();
+		});
+		
+		fileInput.addEventListener('change', (event) => {
+			this.handleFiles(event.target.files);
+		});
+		
+		dropzone.addEventListener('dragover', (event) => {
+			event.preventDefault();
+			dropzone.classList.add('drag_active');
+		});
+		
+		dropzone.addEventListener('dragleave', () => {
+			dropzone.classList.remove('drag_active');
+		});
+		
+		dropzone.addEventListener('drop', (event) => {
+			event.preventDefault();
+			dropzone.classList.remove('drag_active');
+			const files = event.dataTransfer.files;
+			this.handleFiles(files);
+		});
+	}
+	
+	handleFiles(files) {
+		if (files.length > 0) {
+			const file = files[0];
+			
+			if (file.type === 'text/csv' || file.name.endsWith('.csv')) {
+				const date = new Date(file.lastModified);
+				const fileLastModified = `${String(date.getDate()).padStart(2, '0')}/${String(date.getMonth() + 1).padStart(2, '0')}/${date.getFullYear()}`;
+				
+				const uploadedContainer = this.shadowRoot.querySelector('.file_uploaded');
+				uploadedContainer.style.display = 'block';
+				
+				const uploadedNameDisplay = this.shadowRoot.querySelector('.file_uploaded_name');
+				uploadedNameDisplay.textContent = file.name;
+				
+				const uploadedSizeDisplay = this.shadowRoot.querySelector('.file_uploaded_description_size');
+				uploadedSizeDisplay.textContent = `${file.size}б`;
+				
+				const uploadedLastModifiedDisplay = this.shadowRoot.querySelector('.file_uploaded_description_lastModified');
+				uploadedLastModifiedDisplay.textContent = fileLastModified;
+				
+				const animationContainer = this.shadowRoot.querySelector('.animation_container');
+				animationContainer.style.display = 'none';
+				const animationDescriptionContainer = this.shadowRoot.querySelector('.animation_description');
+				animationDescriptionContainer.style.display = 'none';
+				
+				
+				
+				const fileEvent = new CustomEvent('file-uploaded', {
+					detail: { file },
+					bubbles: true,
+					composed: true
+				});
+				this.dispatchEvent(fileEvent);
+				
+			} else {
+				alert('Пожалуйста, загрузите файл формата CSV.');
+			}
+		}
+	}
+	
+	disconnectedCallback() {
+		clearInterval(this.animationInterval);
+	}
+	
 	render() {
 		const style = document.createElement('style');
 		style.textContent =`
@@ -173,97 +264,6 @@ class FileDropzone extends HTMLElement {
 		
 		this.shadowRoot.append(style, container);
 		this.startAnimation();
-	}
-	
-	startAnimation() {
-		this.offset = 0;
-		this.direction = 1;
-		
-		this.animationInterval = setInterval(() => {
-			this.offset += this.direction*0.5;
-			if (Math.abs(this.offset) >= 5) {
-				this.direction *= -1;
-			}
-			
-			const imgBack = this.shadowRoot.querySelector('.img_back');
-			const imgFront = this.shadowRoot.querySelector('.img_front');
-			
-			imgBack.style.transform = `translateY(${this.offset*0.5}px)`;
-			imgFront.style.transform = `translateY(-${this.offset*1.3}px)`;
-		}, 50);
-	}
-	
-	addEventListeners() {
-		const dropzone = this.shadowRoot.querySelector('.block_uploading_file');
-		const fileInput = this.shadowRoot.querySelector('#fileInput');
-		
-		dropzone.addEventListener('click', () => {
-			fileInput.click();
-		});
-		
-		fileInput.addEventListener('change', (event) => {
-			this.handleFiles(event.target.files);
-		});
-		
-		dropzone.addEventListener('dragover', (event) => {
-			event.preventDefault();
-			dropzone.classList.add('drag_active');
-		});
-		
-		dropzone.addEventListener('dragleave', () => {
-			dropzone.classList.remove('drag_active');
-		});
-		
-		dropzone.addEventListener('drop', (event) => {
-			event.preventDefault();
-			dropzone.classList.remove('drag_active');
-			const files = event.dataTransfer.files;
-			this.handleFiles(files);
-		});
-	}
-	
-	handleFiles(files) {
-		if (files.length > 0) {
-			const file = files[0];
-			
-			if (file.type === 'text/csv' || file.name.endsWith('.csv')) {
-				const date = new Date(file.lastModified);
-				const fileLastModified = `${String(date.getDate()).padStart(2, '0')}/${String(date.getMonth() + 1).padStart(2, '0')}/${date.getFullYear()}`;
-				
-				const uploadedContainer = this.shadowRoot.querySelector('.file_uploaded');
-				uploadedContainer.style.display = 'block';
-				
-				const uploadedNameDisplay = this.shadowRoot.querySelector('.file_uploaded_name');
-				uploadedNameDisplay.textContent = file.name;
-				
-				const uploadedSizeDisplay = this.shadowRoot.querySelector('.file_uploaded_description_size');
-				uploadedSizeDisplay.textContent = `${file.size}б`;
-				
-				const uploadedLastModifiedDisplay = this.shadowRoot.querySelector('.file_uploaded_description_lastModified');
-				uploadedLastModifiedDisplay.textContent = fileLastModified;
-				
-				const animationContainer = this.shadowRoot.querySelector('.animation_container');
-				animationContainer.style.display = 'none';
-				const animationDescriptionContainer = this.shadowRoot.querySelector('.animation_description');
-				animationDescriptionContainer.style.display = 'none';
-				
-				
-
-				const fileEvent = new CustomEvent('file-uploaded', {
-					detail: { file },
-					bubbles: true,
-					composed: true
-				});
-				this.dispatchEvent(fileEvent);
-				
-			} else {
-				alert('Пожалуйста, загрузите файл формата CSV.');
-			}
-		}
-	}
-	
-	disconnectedCallback() {
-		clearInterval(this.animationInterval);
 	}
 }
 

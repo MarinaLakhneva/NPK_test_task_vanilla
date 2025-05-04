@@ -8,19 +8,6 @@ class Modal extends HTMLElement {
 		this.render();
 	}
 	
-	connectedCallback() {
-		const uploadedFile = this.shadowRoot.querySelector('file-dropzone');
-		uploadedFile.addEventListener('file-uploaded', (event) => {
-			const uploadedFile = event.detail.file;
-		});
-
-		
-		const inputDesign = this.shadowRoot.querySelector('input-design');
-		inputDesign.addEventListener('input-change', (event) => {
-			const inputDesign = event.detail.value;
-		});
-	}
-	
 	render() {
 		const styles =`
 			.background_blur{
@@ -151,7 +138,7 @@ class Modal extends HTMLElement {
 				width: 100%;
 			}
 			
-			.btn_download{
+			.btn_submit{
 				border: none;
 				padding: 16px 88px;
 				box-sizing: border-box;
@@ -190,13 +177,37 @@ class Modal extends HTMLElement {
 							</div>
 						</div>
 						<div class="modal_footer">
-							<button class="btn_download">Загрузить</button>
+							<button class="btn_submit">Загрузить</button>
 						</div>
 					</div>
 				</div>
 			</div>
 			<style>${styles}</style>
 		`;
+		
+		let flagDisabled = true;
+		const submitButton = this.shadowRoot.querySelector('.btn_submit');
+		const uploadedFile = this.shadowRoot.querySelector('file-dropzone');
+		uploadedFile.addEventListener('file-uploaded', (event) => {
+			if ( event.detail.file === null){
+				flagDisabled = true;
+			}
+			else{
+				flagDisabled = false;
+			}
+		});
+		
+		const inputDesign = this.shadowRoot.querySelector('input-design');
+		inputDesign.addEventListener('input-change', (event) => {
+			if ( event.detail.value === ''){
+				flagDisabled = true;
+			}
+			else{
+				flagDisabled = false;
+			}
+		});
+		submitButton.disabled = flagDisabled;
+		submitButton.style.cursor = flagDisabled ? 'auto' : 'pointer';
 		
 		const closeButton = this.shadowRoot.querySelector('.btn_close_modal');
 		closeButton.addEventListener('click', () => {
