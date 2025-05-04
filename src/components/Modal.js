@@ -6,6 +6,7 @@ class Modal extends HTMLElement {
 		super();
 		this.attachShadow({ mode: 'open' });
 		this.render();
+		this.initializeElements();
 	}
 	
 	render() {
@@ -57,6 +58,24 @@ class Modal extends HTMLElement {
 				border-radius: 22px;
 				background: linear-gradient(to bottom, #5F5CF0, #DDDCFC);
 				transition: opacity 1s ease;
+				opacity: 1;
+			}
+			
+			.active_default {
+				opacity: 0;
+			}
+			
+			.background_color_error {
+				position: absolute;
+				width: 100%;
+				height: 100%;
+				border-radius: 22px;
+				background: linear-gradient(to bottom, #F05C5C, #8F8DF4);
+				transition: opacity 1s ease;
+				opacity: 0;
+			}
+			
+			.active_error {
 				opacity: 1;
 			}
 			
@@ -146,6 +165,8 @@ class Modal extends HTMLElement {
 				width: 100%;
 				border-radius: 30px;
 				background: #BBB9D2;
+				font-weight: 500;
+				font-size: 20px;
 				color: #ffffff;
 				transition: background-color 400ms ease;
 				cursor: auto;
@@ -158,6 +179,7 @@ class Modal extends HTMLElement {
 					<div class="modal_container">
 						<div class="modal_background">
 							<div class="background_color_default"></div>
+							<div class="background_color_error"></div>
 						</div>
 						<div class="modal_header">
 							<button class="btn_close_modal">
@@ -169,7 +191,7 @@ class Modal extends HTMLElement {
 						<div class="modal_content">
 							<div class="modal_content_header">
 								<p class="modal_title">Загрузочное окно</p>
-								<p class="modal_description">Перед загрузкой дайте имя файлу</p>
+								<p class="modal_description"></p>
 							</div>
 							<div class="modal_content_content">
 								<input-design></input-design>
@@ -184,33 +206,43 @@ class Modal extends HTMLElement {
 			</div>
 			<style>${styles}</style>
 		`;
+	}
+	initializeElements() {
+		this.closeButton = this.shadowRoot.querySelector('.btn_close_modal');
+		this.submitButton = this.shadowRoot.querySelector('.btn_submit');
+		this.backgroundErr = this.shadowRoot.querySelector('.background_color_error');
 		
-		let flagDisabled = true;
-		const submitButton = this.shadowRoot.querySelector('.btn_submit');
-		const uploadedFile = this.shadowRoot.querySelector('file-dropzone');
-		uploadedFile.addEventListener('file-uploaded', (event) => {
-			if ( event.detail.file === null){
-				flagDisabled = true;
-			}
-			else{
-				flagDisabled = false;
-			}
-		});
+		this.uploadedFile = this.shadowRoot.querySelector('file-dropzone');
+		this.inputDesign = this.shadowRoot.querySelector('input-design');
 		
-		const inputDesign = this.shadowRoot.querySelector('input-design');
-		inputDesign.addEventListener('input-change', (event) => {
-			if ( event.detail.value === ''){
-				flagDisabled = true;
+		const updateSubmitButtonState = () => {
+			const fileUploaded = this.uploadedFile.getUploadedFile();
+			const inputFileName = this.inputDesign.getInputValue();
+			
+			if(fileUploaded.error){
+				this.backgroundErr.classList.add('active_error');
+				this.shadowRoot.querySelector('.modal_description').textContent = fileUploaded.errorMsg;
 			}
-			else{
-				flagDisabled = false;
+			else {
+				this.backgroundErr.classList.remove('active_error');
+				this.shadowRoot.querySelector('.modal_description').textContent = 'Перед загрузкой дайте имя файлу';
 			}
-		});
-		submitButton.disabled = flagDisabled;
-		submitButton.style.cursor = flagDisabled ? 'auto' : 'pointer';
+			
+			this.submitButton.disabled = fileUploaded.error || !inputFileName;
+			this.submitButton.style.backgroundColor = (!fileUploaded.error && inputFileName) ? '#5F5CF0' : '';
+			this.submitButton.style.cursor = (!fileUploaded.error && inputFileName) ? 'pointer' : 'auto';
+		};
 		
-		const closeButton = this.shadowRoot.querySelector('.btn_close_modal');
-		closeButton.addEventListener('click', () => {
+		const handleInputChange = () => {
+			updateSubmitButtonState();
+		};
+		
+		this.uploadedFile.addEventListener('file-uploaded', handleInputChange);
+		this.inputDesign.addEventListener('input-change', handleInputChange);
+		
+		updateSubmitButtonState();
+		
+		this.closeButton.addEventListener('click', () => {
 			this.dispatchEvent(new Event('close'));
 		});
 	}

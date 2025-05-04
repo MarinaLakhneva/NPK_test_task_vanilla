@@ -7,103 +7,16 @@ class FileDropzone extends HTMLElement {
 		super();
 		this.attachShadow({ mode: 'open' });
 		this.render();
-		this.addEventListeners();
-	}
-	
-	startAnimation() {
-		this.offset = 0;
-		this.direction = 1;
-		
-		this.animationInterval = setInterval(() => {
-			this.offset += this.direction*0.5;
-			if (Math.abs(this.offset) >= 5) {
-				this.direction *= -1;
-			}
-			
-			const imgBack = this.shadowRoot.querySelector('.img_back');
-			const imgFront = this.shadowRoot.querySelector('.img_front');
-			
-			imgBack.style.transform = `translateY(${this.offset*0.5}px)`;
-			imgFront.style.transform = `translateY(-${this.offset*1.3}px)`;
-		}, 50);
-	}
-	
-	addEventListeners() {
-		const dropzone = this.shadowRoot.querySelector('.block_uploading_file');
-		const fileInput = this.shadowRoot.querySelector('#fileInput');
-		
-		dropzone.addEventListener('click', () => {
-			fileInput.click();
-		});
-		
-		fileInput.addEventListener('change', (event) => {
-			this.handleFiles(event.target.files);
-		});
-		
-		dropzone.addEventListener('dragover', (event) => {
-			event.preventDefault();
-			dropzone.classList.add('drag_active');
-		});
-		
-		dropzone.addEventListener('dragleave', () => {
-			dropzone.classList.remove('drag_active');
-		});
-		
-		dropzone.addEventListener('drop', (event) => {
-			event.preventDefault();
-			dropzone.classList.remove('drag_active');
-			const files = event.dataTransfer.files;
-			this.handleFiles(files);
-		});
-	}
-	
-	handleFiles(files) {
-		if (files.length > 0) {
-			const file = files[0];
-			
-			if (file.type === 'text/csv' || file.name.endsWith('.csv')) {
-				const date = new Date(file.lastModified);
-				const fileLastModified = `${String(date.getDate()).padStart(2, '0')}/${String(date.getMonth() + 1).padStart(2, '0')}/${date.getFullYear()}`;
-				
-				const uploadedContainer = this.shadowRoot.querySelector('.file_uploaded');
-				uploadedContainer.style.display = 'block';
-				
-				const uploadedNameDisplay = this.shadowRoot.querySelector('.file_uploaded_name');
-				uploadedNameDisplay.textContent = file.name;
-				
-				const uploadedSizeDisplay = this.shadowRoot.querySelector('.file_uploaded_description_size');
-				uploadedSizeDisplay.textContent = `${file.size}б`;
-				
-				const uploadedLastModifiedDisplay = this.shadowRoot.querySelector('.file_uploaded_description_lastModified');
-				uploadedLastModifiedDisplay.textContent = fileLastModified;
-				
-				const animationContainer = this.shadowRoot.querySelector('.animation_container');
-				animationContainer.style.display = 'none';
-				const animationDescriptionContainer = this.shadowRoot.querySelector('.animation_description');
-				animationDescriptionContainer.style.display = 'none';
-				
-				
-				
-				const fileEvent = new CustomEvent('file-uploaded', {
-					detail: { file },
-					bubbles: true,
-					composed: true
-				});
-				this.dispatchEvent(fileEvent);
-				
-			} else {
-				alert('Пожалуйста, загрузите файл формата CSV.');
-			}
-		}
-	}
-	
-	disconnectedCallback() {
-		clearInterval(this.animationInterval);
+		this.setupEventListeners();
+		this.fileData = {
+			uploadedFile: null,
+			error: false,
+			errorMsg: ''
+		};
 	}
 	
 	render() {
-		const style = document.createElement('style');
-		style.textContent =`
+		const styles =`
 			.block_uploading_file{
 				margin-top: 26.33px;
 				padding: 39px 29px 31.24px 27px;
@@ -119,7 +32,7 @@ class FileDropzone extends HTMLElement {
 				border: 1px solid #5F5CF0;
 			}
 			
-			.animation_container{
+			.dropzone{
 				position: relative;
 				display: flex;
 				justify-content: center;
@@ -142,7 +55,7 @@ class FileDropzone extends HTMLElement {
 				top: 22px;
 			}
 
-			.animation_blur{
+			.dropzone_blur{
 				position: absolute;
 				margin-top: 41px;
 				width: 170.84px;
@@ -154,7 +67,7 @@ class FileDropzone extends HTMLElement {
 				z-index: 1;
 			}
 			
-			.animation_description{
+			.dropzone_description{
 				display: flex;
 				justify-content: center;
 				margin-top: 140px;
@@ -167,11 +80,13 @@ class FileDropzone extends HTMLElement {
 				display: flex;
 				flex-direction: column;
 				justify-content: center;
-				opacity: 1; //1->0
+				opacity: 0;
 				transition: opacity 400ms ease;
 			}
 			
 			.file_uploaded_title{
+				margin: 0;
+				padding: 0;
 				display: flex;
 				justify-content: center;
 				font-weight: 600;
@@ -231,39 +146,137 @@ class FileDropzone extends HTMLElement {
 			}
 		`;
 		
-
-		const container = document.createElement('div');
-		container.classList.add('block_uploading_file');
-		container.innerHTML =`
-			<input type="file" id="fileInput" accept=".csv" style="display: none" />
-			<div class="animation_container">
-				<img src="${Dir}" alt='dir' class="img_dir"/>
-				<img src="${File_back}" alt='file' class="img_back"/>
-				<img src="${File_front}" alt='file' class="img_front"/>
-				<span class="animation_blur"></span>
-			</div>
-			<p class="animation_description">Перенесите ваш файл сюда</p>
-			
-			<div class="file_uploaded" style="display:none">
-				<p class="file_uploaded_title">Успешно добавлен</p>
-				<div class="file_uploaded_container">
-					<p class="file_uploaded_name"></p>
-					<div class="file_uploaded_description">
-						<div class="file_uploaded_description_container">
-							<p class="file_uploaded_description_title">Размер файла:</p>
-							<p class="file_uploaded_description_value file_uploaded_description_size"></p>
-						</div>
-						<div class="file_uploaded_description_container">
-							<p class="file_uploaded_description_title">Дата изменения:</p>
-							<p class="file_uploaded_description_value file_uploaded_description_lastModified"></p>
+		this.shadowRoot.innerHTML = `
+			<div class="block_uploading_file">
+				<input type="file" id="fileInput" accept=".csv" style="display: none" />
+				<div class="dropzone">
+					<img src="${Dir}" alt='dir' class="img_dir"/>
+					<img src="${File_back}" alt='file' class="img_back"/>
+					<img src="${File_front}" alt='file' class="img_front"/>
+					<span class="dropzone_blur"></span>
+				</div>
+				<p class="dropzone_description">Перенесите ваш файл сюда</p>
+				
+				<div class="file_uploaded">
+					<p class="file_uploaded_title">Успешно добавлен</p>
+					<div class="file_uploaded_container">
+						<p class="file_uploaded_name"></p>
+						<div class="file_uploaded_description">
+							<div class="file_uploaded_description_container">
+								<p class="file_uploaded_description_title">Размер файла:</p>
+								<p class="file_uploaded_description_value file_uploaded_description_size"></p>
+							</div>
+							<div class="file_uploaded_description_container">
+								<p class="file_uploaded_description_title">Дата изменения:</p>
+								<p class="file_uploaded_description_value file_uploaded_description_lastModified"></p>
+							</div>
 						</div>
 					</div>
 				</div>
 			</div>
+			<style>${styles}</style>
 		`;
 		
-		this.shadowRoot.append(style, container);
 		this.startAnimation();
+	}
+	
+	startAnimation() {
+		this.offset = 0;
+		this.direction = 1;
+		
+		this.animationInterval = setInterval(() => {
+			this.offset += this.direction * 0.5;
+			if (Math.abs(this.offset) >= 5) {
+				this.direction *= -1;
+			}
+			
+			const imgBack = this.shadowRoot.querySelector('.img_back');
+			const imgFront = this.shadowRoot.querySelector('.img_front');
+			
+			imgBack.style.transform = `translateY(${this.offset * 0.5}px)`;
+			imgFront.style.transform = `translateY(${-this.offset * 1.3}px)`;
+		}, 50);
+	}
+	
+	setupEventListeners() {
+		const blockUploadingFile = this.shadowRoot.querySelector('.block_uploading_file');
+		const dropzone = this.shadowRoot.querySelector('.dropzone');
+		const fileInput = this.shadowRoot.querySelector('#fileInput');
+		
+		dropzone.addEventListener('click', () => fileInput.click());
+		fileInput.addEventListener('change', (event) => this.handleFileUpload(event.target.files));
+		
+		dropzone.addEventListener('dragover', (event) => {
+			event.preventDefault();
+			blockUploadingFile.classList.add('drag_active');
+		});
+		dropzone.addEventListener('dragleave', () => blockUploadingFile.classList.remove('drag_active'));
+		
+		dropzone.addEventListener('drop', (event) => {
+			event.preventDefault();
+			blockUploadingFile.classList.remove('drag_active');
+			this.handleFileUpload(event.dataTransfer.files);
+		});
+	}
+	
+	handleFileUpload(files) {
+		if (files.length === 0) return;
+		const file = files[0];
+		
+		if (this.isValidFile(file)) {
+			this.fileData = {
+				uploadedFile: file,
+				error: false,
+				errorMsg: ''
+			};
+			this.displayFileInfo(file);
+		} else {
+			this.fileData = {
+				uploadedFile: null,
+				error: true,
+				errorMsg: 'Неправильный формат файла'
+			};
+		}
+		this.dispatchFileUploadedEvent(file);
+	}
+	
+	isValidFile(file) {
+		return file.type === 'text/csv' || file.name.endsWith('.csv');
+	}
+	
+	displayFileInfo(file) {
+		const date = new Date(file.lastModified);
+		const fileLastModified = `${String(date.getDate()).padStart(2, '0')}/${String(date.getMonth() + 1).padStart(2, '0')}/${date.getFullYear()}`;
+		
+		const uploadedContainer = this.shadowRoot.querySelector('.file_uploaded');
+		uploadedContainer.style.opacity = "1";
+		
+		this.shadowRoot.querySelector('.file_uploaded_name').textContent = file.name;
+		this.shadowRoot.querySelector('.file_uploaded_description_size').textContent = `${file.size}б`;
+		this.shadowRoot.querySelector('.file_uploaded_description_lastModified').textContent = fileLastModified;
+		
+		const dropzone = this.shadowRoot.querySelector('.dropzone');
+		dropzone.style.display = 'none';
+		
+		const dropzoneDescription = this.shadowRoot.querySelector('.dropzone_description');
+		dropzoneDescription.style.display = 'none';
+	}
+	
+	dispatchFileUploadedEvent(file) {
+		const fileEvent = new CustomEvent('file-uploaded', {
+			detail: { file },
+			bubbles: true,
+			composed: true
+		});
+		this.dispatchEvent(fileEvent);
+	}
+	
+	getUploadedFile() {
+		return this.fileData;
+	}
+	
+	disconnectedCallback() {
+		clearInterval(this.animationInterval);
 	}
 }
 
