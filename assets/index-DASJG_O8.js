@@ -1,4 +1,4 @@
-(function(){const e=document.createElement("link").relList;if(e&&e.supports&&e.supports("modulepreload"))return;for(const i of document.querySelectorAll('link[rel="modulepreload"]'))o(i);new MutationObserver(i=>{for(const n of i)if(n.type==="childList")for(const s of n.addedNodes)s.tagName==="LINK"&&s.rel==="modulepreload"&&o(s)}).observe(document,{childList:!0,subtree:!0});function t(i){const n={};return i.integrity&&(n.integrity=i.integrity),i.referrerPolicy&&(n.referrerPolicy=i.referrerPolicy),i.crossOrigin==="use-credentials"?n.credentials="include":i.crossOrigin==="anonymous"?n.credentials="omit":n.credentials="same-origin",n}function o(i){if(i.ep)return;i.ep=!0;const n=t(i);fetch(i.href,n)}})();const h="data:image/svg+xml,%3csvg%20width='171'%20height='126'%20viewBox='0%200%20171%20126'%20fill='none'%20xmlns='http://www.w3.org/2000/svg'%3e%3cpath%20d='M0.412386%2016.666C0.328426%207.96051%207.31278%200.832773%2016.0182%200.739843L50.8476%200.368042C55.4039%200.319404%2059.1369%203.97358%2059.1855%208.52987C59.2338%2013.049%2062.9088%2016.6882%2067.4281%2016.6922L153.034%2016.768C161.602%2016.7756%20168.597%2023.6203%20168.791%2032.1857L170.521%20108.592C170.721%20117.422%20163.634%20124.696%20154.802%20124.724L17.1332%20125.168C8.46054%20125.196%201.3918%20118.218%201.30816%20109.546L0.412386%2016.666Z'%20fill='%235F5CF0'/%3e%3c/svg%3e",f="data:image/svg+xml,%3csvg%20width='69'%20height='85'%20viewBox='0%200%2069%2085'%20fill='none'%20xmlns='http://www.w3.org/2000/svg'%3e%3crect%20x='0.0546875'%20y='16.9419'%20width='47.2491'%20height='71.6357'%20rx='3.78598'%20transform='rotate(-20.0462%200.0546875%2016.9419)'%20fill='%23F1F1F1'/%3e%3crect%20x='10.551'%20y='30.1477'%20width='18.29'%20height='3.04833'%20transform='rotate(-20.0462%2010.551%2030.1477)'%20fill='%23454559'/%3e%3crect%20x='12.3806'%20y='35.1599'%20width='30.4833'%20height='3.04833'%20transform='rotate(-20.0462%2012.3806%2035.1599)'%20fill='%23454559'/%3e%3crect%20x='19.9568'%20y='55.9192'%20width='30.4833'%20height='3.04833'%20transform='rotate(-20.0462%2019.9568%2055.9192)'%20fill='%23454559'/%3e%3crect%20x='14.208'%20y='40.1704'%20width='30.4833'%20height='3.04833'%20transform='rotate(-20.0462%2014.208%2040.1704)'%20fill='%23454559'/%3e%3crect%20x='21.7839'%20y='60.9309'%20width='35.0558'%20height='3.04833'%20transform='rotate(-20.0462%2021.7839%2060.9309)'%20fill='%23454559'/%3e%3crect%20x='16.0376'%20y='45.1824'%20width='25.1487'%20height='3.04833'%20transform='rotate(-20.0462%2016.0376%2045.1824)'%20fill='%23454559'/%3e%3crect%20x='23.6138'%20y='65.9417'%20width='25.1487'%20height='3.04833'%20transform='rotate(-20.0462%2023.6138%2065.9417)'%20fill='%23454559'/%3e%3c/svg%3e",u="data:image/svg+xml,%3csvg%20width='79'%20height='96'%20viewBox='0%200%2079%2096'%20fill='none'%20xmlns='http://www.w3.org/2000/svg'%3e%3crect%20x='27.9023'%20y='0.557129'%20width='53.9171'%20height='81.7453'%20rx='3.78598'%20transform='rotate(19.8027%2027.9023%200.557129)'%20fill='%23F1F1F1'/%3e%3crect%20x='27.4421'%20y='19.8022'%20width='20.8711'%20height='3.47852'%20transform='rotate(19.8027%2027.4421%2019.8022)'%20fill='%23454559'/%3e%3crect%20x='25.3787'%20y='25.5295'%20width='34.7852'%20height='3.47852'%20transform='rotate(19.8027%2025.3787%2025.5295)'%20fill='%23454559'/%3e%3crect%20x='16.8394'%20y='49.2573'%20width='34.7852'%20height='3.47852'%20transform='rotate(19.8027%2016.8394%2049.2573)'%20fill='%23454559'/%3e%3crect%20x='23.3198'%20y='31.2581'%20width='34.7852'%20height='3.47852'%20transform='rotate(19.8027%2023.3198%2031.2581)'%20fill='%23454559'/%3e%3crect%20x='14.7756'%20y='54.9834'%20width='40.003'%20height='3.47852'%20transform='rotate(19.8027%2014.7756%2054.9834)'%20fill='%23454559'/%3e%3crect%20x='21.2561'%20y='36.9851'%20width='28.6978'%20height='3.47852'%20transform='rotate(19.8027%2021.2561%2036.9851)'%20fill='%23454559'/%3e%3crect%20x='12.7144'%20y='60.7117'%20width='28.6978'%20height='3.47852'%20transform='rotate(19.8027%2012.7144%2060.7117)'%20fill='%23454559'/%3e%3c/svg%3e";class g extends HTMLElement{constructor(){super(),this.attachShadow({mode:"open"}),this.render(),this.addEventListeners()}render(){const e=document.createElement("style");e.textContent=`
+(function(){const e=document.createElement("link").relList;if(e&&e.supports&&e.supports("modulepreload"))return;for(const i of document.querySelectorAll('link[rel="modulepreload"]'))o(i);new MutationObserver(i=>{for(const n of i)if(n.type==="childList")for(const s of n.addedNodes)s.tagName==="LINK"&&s.rel==="modulepreload"&&o(s)}).observe(document,{childList:!0,subtree:!0});function t(i){const n={};return i.integrity&&(n.integrity=i.integrity),i.referrerPolicy&&(n.referrerPolicy=i.referrerPolicy),i.crossOrigin==="use-credentials"?n.credentials="include":i.crossOrigin==="anonymous"?n.credentials="omit":n.credentials="same-origin",n}function o(i){if(i.ep)return;i.ep=!0;const n=t(i);fetch(i.href,n)}})();const h="data:image/svg+xml,%3csvg%20width='171'%20height='126'%20viewBox='0%200%20171%20126'%20fill='none'%20xmlns='http://www.w3.org/2000/svg'%3e%3cpath%20d='M0.412386%2016.666C0.328426%207.96051%207.31278%200.832773%2016.0182%200.739843L50.8476%200.368042C55.4039%200.319404%2059.1369%203.97358%2059.1855%208.52987C59.2338%2013.049%2062.9088%2016.6882%2067.4281%2016.6922L153.034%2016.768C161.602%2016.7756%20168.597%2023.6203%20168.791%2032.1857L170.521%20108.592C170.721%20117.422%20163.634%20124.696%20154.802%20124.724L17.1332%20125.168C8.46054%20125.196%201.3918%20118.218%201.30816%20109.546L0.412386%2016.666Z'%20fill='%235F5CF0'/%3e%3c/svg%3e",u="data:image/svg+xml,%3csvg%20width='69'%20height='85'%20viewBox='0%200%2069%2085'%20fill='none'%20xmlns='http://www.w3.org/2000/svg'%3e%3crect%20x='0.0546875'%20y='16.9419'%20width='47.2491'%20height='71.6357'%20rx='3.78598'%20transform='rotate(-20.0462%200.0546875%2016.9419)'%20fill='%23F1F1F1'/%3e%3crect%20x='10.551'%20y='30.1477'%20width='18.29'%20height='3.04833'%20transform='rotate(-20.0462%2010.551%2030.1477)'%20fill='%23454559'/%3e%3crect%20x='12.3806'%20y='35.1599'%20width='30.4833'%20height='3.04833'%20transform='rotate(-20.0462%2012.3806%2035.1599)'%20fill='%23454559'/%3e%3crect%20x='19.9568'%20y='55.9192'%20width='30.4833'%20height='3.04833'%20transform='rotate(-20.0462%2019.9568%2055.9192)'%20fill='%23454559'/%3e%3crect%20x='14.208'%20y='40.1704'%20width='30.4833'%20height='3.04833'%20transform='rotate(-20.0462%2014.208%2040.1704)'%20fill='%23454559'/%3e%3crect%20x='21.7839'%20y='60.9309'%20width='35.0558'%20height='3.04833'%20transform='rotate(-20.0462%2021.7839%2060.9309)'%20fill='%23454559'/%3e%3crect%20x='16.0376'%20y='45.1824'%20width='25.1487'%20height='3.04833'%20transform='rotate(-20.0462%2016.0376%2045.1824)'%20fill='%23454559'/%3e%3crect%20x='23.6138'%20y='65.9417'%20width='25.1487'%20height='3.04833'%20transform='rotate(-20.0462%2023.6138%2065.9417)'%20fill='%23454559'/%3e%3c/svg%3e",f="data:image/svg+xml,%3csvg%20width='79'%20height='96'%20viewBox='0%200%2079%2096'%20fill='none'%20xmlns='http://www.w3.org/2000/svg'%3e%3crect%20x='27.9023'%20y='0.557129'%20width='53.9171'%20height='81.7453'%20rx='3.78598'%20transform='rotate(19.8027%2027.9023%200.557129)'%20fill='%23F1F1F1'/%3e%3crect%20x='27.4421'%20y='19.8022'%20width='20.8711'%20height='3.47852'%20transform='rotate(19.8027%2027.4421%2019.8022)'%20fill='%23454559'/%3e%3crect%20x='25.3787'%20y='25.5295'%20width='34.7852'%20height='3.47852'%20transform='rotate(19.8027%2025.3787%2025.5295)'%20fill='%23454559'/%3e%3crect%20x='16.8394'%20y='49.2573'%20width='34.7852'%20height='3.47852'%20transform='rotate(19.8027%2016.8394%2049.2573)'%20fill='%23454559'/%3e%3crect%20x='23.3198'%20y='31.2581'%20width='34.7852'%20height='3.47852'%20transform='rotate(19.8027%2023.3198%2031.2581)'%20fill='%23454559'/%3e%3crect%20x='14.7756'%20y='54.9834'%20width='40.003'%20height='3.47852'%20transform='rotate(19.8027%2014.7756%2054.9834)'%20fill='%23454559'/%3e%3crect%20x='21.2561'%20y='36.9851'%20width='28.6978'%20height='3.47852'%20transform='rotate(19.8027%2021.2561%2036.9851)'%20fill='%23454559'/%3e%3crect%20x='12.7144'%20y='60.7117'%20width='28.6978'%20height='3.47852'%20transform='rotate(19.8027%2012.7144%2060.7117)'%20fill='%23454559'/%3e%3c/svg%3e";class m extends HTMLElement{constructor(){super(),this.attachShadow({mode:"open"}),this.render(),this.addEventListeners()}startAnimation(){this.offset=0,this.direction=1,this.animationInterval=setInterval(()=>{this.offset+=this.direction*.5,Math.abs(this.offset)>=5&&(this.direction*=-1);const e=this.shadowRoot.querySelector(".img_back"),t=this.shadowRoot.querySelector(".img_front");e.style.transform=`translateY(${this.offset*.5}px)`,t.style.transform=`translateY(-${this.offset*1.3}px)`},50)}addEventListeners(){const e=this.shadowRoot.querySelector(".block_uploading_file"),t=this.shadowRoot.querySelector("#fileInput");e.addEventListener("click",()=>{t.click()}),t.addEventListener("change",o=>{this.handleFiles(o.target.files)}),e.addEventListener("dragover",o=>{o.preventDefault(),e.classList.add("drag_active")}),e.addEventListener("dragleave",()=>{e.classList.remove("drag_active")}),e.addEventListener("drop",o=>{o.preventDefault(),e.classList.remove("drag_active");const i=o.dataTransfer.files;this.handleFiles(i)})}handleFiles(e){if(e.length>0){const t=e[0];if(t.type==="text/csv"||t.name.endsWith(".csv")){const o=new Date(t.lastModified),i=`${String(o.getDate()).padStart(2,"0")}/${String(o.getMonth()+1).padStart(2,"0")}/${o.getFullYear()}`,n=this.shadowRoot.querySelector(".file_uploaded");n.style.display="block";const s=this.shadowRoot.querySelector(".file_uploaded_name");s.textContent=t.name;const a=this.shadowRoot.querySelector(".file_uploaded_description_size");a.textContent=`${t.size}б`;const r=this.shadowRoot.querySelector(".file_uploaded_description_lastModified");r.textContent=i;const d=this.shadowRoot.querySelector(".animation_container");d.style.display="none";const c=this.shadowRoot.querySelector(".animation_description");c.style.display="none";const p=new CustomEvent("file-uploaded",{detail:{file:t},bubbles:!0,composed:!0});this.dispatchEvent(p)}else alert("Пожалуйста, загрузите файл формата CSV.")}}disconnectedCallback(){clearInterval(this.animationInterval)}render(){const e=document.createElement("style");e.textContent=`
 			.block_uploading_file{
 				margin-top: 26.33px;
 				padding: 39px 29px 31.24px 27px;
@@ -128,8 +128,8 @@
 			<input type="file" id="fileInput" accept=".csv" style="display: none" />
 			<div class="animation_container">
 				<img src="${h}" alt='dir' class="img_dir"/>
-				<img src="${f}" alt='file' class="img_back"/>
-				<img src="${u}" alt='file' class="img_front"/>
+				<img src="${u}" alt='file' class="img_back"/>
+				<img src="${f}" alt='file' class="img_front"/>
 				<span class="animation_blur"></span>
 			</div>
 			<p class="animation_description">Перенесите ваш файл сюда</p>
@@ -150,7 +150,7 @@
 					</div>
 				</div>
 			</div>
-		`,this.shadowRoot.append(e,t),this.startAnimation()}startAnimation(){this.offset=0,this.direction=1,this.animationInterval=setInterval(()=>{this.offset+=this.direction*.5,Math.abs(this.offset)>=5&&(this.direction*=-1);const e=this.shadowRoot.querySelector(".img_back"),t=this.shadowRoot.querySelector(".img_front");e.style.transform=`translateY(${this.offset*.5}px)`,t.style.transform=`translateY(-${this.offset*1.3}px)`},50)}addEventListeners(){const e=this.shadowRoot.querySelector(".block_uploading_file"),t=this.shadowRoot.querySelector("#fileInput");e.addEventListener("click",()=>{t.click()}),t.addEventListener("change",o=>{this.handleFiles(o.target.files)}),e.addEventListener("dragover",o=>{o.preventDefault(),e.classList.add("drag_active")}),e.addEventListener("dragleave",()=>{e.classList.remove("drag_active")}),e.addEventListener("drop",o=>{o.preventDefault(),e.classList.remove("drag_active");const i=o.dataTransfer.files;this.handleFiles(i)})}handleFiles(e){if(e.length>0){const t=e[0];if(t.type==="text/csv"||t.name.endsWith(".csv")){const o=new Date(t.lastModified),i=`${String(o.getDate()).padStart(2,"0")}/${String(o.getMonth()+1).padStart(2,"0")}/${o.getFullYear()}`,n=this.shadowRoot.querySelector(".file_uploaded");n.style.display="block";const s=this.shadowRoot.querySelector(".file_uploaded_name");s.textContent=t.name;const a=this.shadowRoot.querySelector(".file_uploaded_description_size");a.textContent=`${t.size}б`;const r=this.shadowRoot.querySelector(".file_uploaded_description_lastModified");r.textContent=i;const d=this.shadowRoot.querySelector(".animation_container");d.style.display="none";const c=this.shadowRoot.querySelector(".animation_description");c.style.display="none";const p=new CustomEvent("file-uploaded",{detail:{file:t},bubbles:!0,composed:!0});this.dispatchEvent(p)}else alert("Пожалуйста, загрузите файл формата CSV.")}}disconnectedCallback(){clearInterval(this.animationInterval)}}customElements.define("file-dropzone",g);class m extends HTMLElement{constructor(){super(),this.attachShadow({mode:"open"}),this.render()}render(){const e=`
+		`,this.shadowRoot.append(e,t),this.startAnimation()}}customElements.define("file-dropzone",m);class g extends HTMLElement{constructor(){super(),this.attachShadow({mode:"open"}),this.render(),this.initializeElements(),this.setupEventListeners()}render(){const e=`
 			.modal_input_container{
 				display: flex;
 				justify-content: space-between;
@@ -164,10 +164,22 @@
 				transition: all ease 400ms;
 			}
 			
+			.hover{
+				transition: all ease 400ms;
+			}
+			
+			.modal_input_container.hover {
+				background-color: #BBB9D2;
+			}
+			
 			.modal_input_container:hover{
 				border: 1px solid #5F5CF0;
 			}
 			
+			.modal_input_container.active {
+        border-color: #5F5CF0;
+      }
+
 			.input_name_file{
 			  border: none;
         outline: none;
@@ -175,13 +187,17 @@
 				font-weight: 500;
 				font-size: 17.5px;
 				color: #5F5CF0;
-				transition: background-color 0.3s ease;
+				transition: all ease 400ms;
 			}
 			
 			.input_name_file::placeholder {
 				font-weight: 500;
 				font-size: 17.5px;
 				color: #A5A5A5;
+			}
+			
+			.input_name_file.hover {
+				background-color: #BBB9D2;
 			}
 			
 			.btn_clear{
@@ -213,7 +229,7 @@
 			</button>
 			</div>
 			<style>${e}</style>
-		`;const t=this.shadowRoot.querySelector(".btn_clear");t.addEventListener("click",()=>{this.inputElement?(this.inputElement.value="",this.dispatchEvent(new CustomEvent("input-change",{detail:{value:""},bubbles:!0,composed:!0}))):console.error("Input element not found!")}),this.inputElement=this.shadowRoot.querySelector(".input_name_file"),this.inputElement.addEventListener("input",o=>{o.target.value.trim()===""?t.style.cursor="auto":t.style.cursor="pointer",this.dispatchEvent(new CustomEvent("input-change",{detail:{value:o.target.value},bubbles:!0,composed:!0}))})}}customElements.define("input-design",m);class x extends HTMLElement{constructor(){super(),this.attachShadow({mode:"open"}),this.render()}connectedCallback(){this.shadowRoot.querySelector("file-dropzone").addEventListener("file-uploaded",o=>{o.detail.file}),this.shadowRoot.querySelector("input-design").addEventListener("input-change",o=>{o.detail.value})}render(){const e=`
+		`}initializeElements(){this.inputContainer=this.shadowRoot.querySelector(".modal_input_container"),this.inputElement=this.shadowRoot.querySelector(".input_name_file"),this.clearButton=this.shadowRoot.querySelector(".btn_clear"),this.setupEventListeners(),this.updateClearButton()}setupEventListeners(){this.clearButton.addEventListener("click",()=>this.clearInput()),this.inputElement.addEventListener("input",e=>this.handleInputChange(e)),this.clearButton.addEventListener("mouseenter",()=>{this.inputElement.value.trim()!==""&&(this.inputElement.classList.add("hover"),this.inputContainer.classList.add("hover"))}),this.clearButton.addEventListener("mouseleave",()=>{this.inputElement.classList.remove("hover"),this.inputContainer.classList.remove("hover")})}handleInputChange(e){const t=e.target.value;this.updateClearButton(t),this.dispatchEvent(new CustomEvent("input-change",{detail:{value:t},bubbles:!0,composed:!0}))}updateClearButton(e=""){this.clearButton.disabled=e.trim()==="",this.clearButton.style.cursor=e.trim()===""?"auto":"pointer",e.trim()!==""?this.inputContainer.classList.add("active"):this.inputContainer.classList.remove("active")}clearInput(){this.inputElement.value="",this.updateClearButton(),this.inputElement.classList.remove("hover"),this.inputContainer.classList.remove("hover"),this.dispatchEvent(new CustomEvent("input-change",{detail:{value:""},bubbles:!0,composed:!0}))}getInputValue(){return this.inputElement.value}setInputValue(e){this.inputElement.value=e,this.updateClearButton(e),this.dispatchEvent(new CustomEvent("input-change",{detail:{value:e},bubbles:!0,composed:!0}))}}customElements.define("input-design",g);class x extends HTMLElement{constructor(){super(),this.attachShadow({mode:"open"}),this.render()}render(){const e=`
 			.background_blur{
 				position: fixed;
 				display: flex;
@@ -342,7 +358,7 @@
 				width: 100%;
 			}
 			
-			.btn_download{
+			.btn_submit{
 				border: none;
 				padding: 16px 88px;
 				box-sizing: border-box;
@@ -379,13 +395,13 @@
 							</div>
 						</div>
 						<div class="modal_footer">
-							<button class="btn_download">Загрузить</button>
+							<button class="btn_submit">Загрузить</button>
 						</div>
 					</div>
 				</div>
 			</div>
 			<style>${e}</style>
-		`,this.shadowRoot.querySelector(".btn_close_modal").addEventListener("click",()=>{this.dispatchEvent(new Event("close"))})}}customElements.define("modal-window",x);class _ extends HTMLElement{constructor(){super(),this.attachShadow({mode:"open"}),this.isOpen=!1,this.handleOpenModal=this.handleOpenModal.bind(this),this.handleCloseModal=this.handleCloseModal.bind(this),this.render()}handleOpenModal(){this.isOpen=!0,this.render()}handleCloseModal(){this.isOpen=!1,this.render()}render(){const e=`
+		`;let t=!0;const o=this.shadowRoot.querySelector(".btn_submit");this.shadowRoot.querySelector("file-dropzone").addEventListener("file-uploaded",a=>{a.detail.file===null?t=!0:t=!1}),this.shadowRoot.querySelector("input-design").addEventListener("input-change",a=>{a.detail.value===""?t=!0:t=!1}),o.disabled=t,o.style.cursor=t?"auto":"pointer",this.shadowRoot.querySelector(".btn_close_modal").addEventListener("click",()=>{this.dispatchEvent(new Event("close"))})}}customElements.define("modal-window",x);class _ extends HTMLElement{constructor(){super(),this.attachShadow({mode:"open"}),this.isOpen=!1,this.handleOpenModal=this.handleOpenModal.bind(this),this.handleCloseModal=this.handleCloseModal.bind(this),this.render()}handleOpenModal(){this.isOpen=!0,this.render()}handleCloseModal(){this.isOpen=!1,this.render()}render(){const e=`
 			.btn_open_modal {
 					height: 56px;
 					max-width: 277px;
