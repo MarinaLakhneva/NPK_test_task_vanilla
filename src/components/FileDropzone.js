@@ -7,6 +7,7 @@ class FileDropzone extends HTMLElement {
 		super();
 		this.attachShadow({ mode: 'open' });
 		this.render();
+		this.initializeElements();
 		this.setupEventListeners();
 		this.fileData = {
 			uploadedFile: null,
@@ -28,7 +29,7 @@ class FileDropzone extends HTMLElement {
 				background-color: rgba(255, 255, 255, 0.4);
 				transition: border 400ms ease;
 			}
-			.block_uploading_file.drag_active{
+			.block_uploading_file.block_uploading_file_active{
 				border: 1px solid #5F5CF0;
 			}
 			
@@ -198,23 +199,26 @@ class FileDropzone extends HTMLElement {
 		}, 50);
 	}
 	
+	initializeElements() {
+		this.blockUploadingFile = this.shadowRoot.querySelector('.block_uploading_file');
+		this.dropzone = this.shadowRoot.querySelector('.dropzone');
+		this.fileInput = this.shadowRoot.querySelector('#fileInput');
+	}
+	
 	setupEventListeners() {
-		const blockUploadingFile = this.shadowRoot.querySelector('.block_uploading_file');
-		const dropzone = this.shadowRoot.querySelector('.dropzone');
-		const fileInput = this.shadowRoot.querySelector('#fileInput');
+		this.dropzone.addEventListener('click', () => this.fileInput.click());
+		this.fileInput.addEventListener('change', (event) => this.handleFileUpload(event.target.files));
 		
-		dropzone.addEventListener('click', () => fileInput.click());
-		fileInput.addEventListener('change', (event) => this.handleFileUpload(event.target.files));
-		
-		dropzone.addEventListener('dragover', (event) => {
+		this.dropzone.addEventListener('dragover', (event) => {
 			event.preventDefault();
-			blockUploadingFile.classList.add('drag_active');
+			this.blockUploadingFile.classList.add('block_uploading_file_active');
 		});
-		dropzone.addEventListener('dragleave', () => blockUploadingFile.classList.remove('drag_active'));
-		
-		dropzone.addEventListener('drop', (event) => {
+		this.dropzone.addEventListener('dragleave', () => {
+			this.blockUploadingFile.classList.remove('block_uploading_file_active')
+		});
+		this.dropzone.addEventListener('drop', (event) => {
 			event.preventDefault();
-			blockUploadingFile.classList.remove('drag_active');
+			this.blockUploadingFile.classList.remove('block_uploading_file_active');
 			this.handleFileUpload(event.dataTransfer.files);
 		});
 	}
@@ -248,16 +252,14 @@ class FileDropzone extends HTMLElement {
 		const date = new Date(file.lastModified);
 		const fileLastModified = `${String(date.getDate()).padStart(2, '0')}/${String(date.getMonth() + 1).padStart(2, '0')}/${date.getFullYear()}`;
 		
-		const uploadedContainer = this.shadowRoot.querySelector('.file_uploaded');
-		uploadedContainer.style.opacity = "1";
-		
 		this.shadowRoot.querySelector('.file_uploaded_name').textContent = file.name;
 		this.shadowRoot.querySelector('.file_uploaded_description_size').textContent = `${file.size}б`;
 		this.shadowRoot.querySelector('.file_uploaded_description_lastModified').textContent = fileLastModified;
 		
+		const uploadedContainer = this.shadowRoot.querySelector('.file_uploaded');
+		uploadedContainer.style.opacity = "1";
 		const dropzone = this.shadowRoot.querySelector('.dropzone');
 		dropzone.style.display = 'none';
-		
 		const dropzoneDescription = this.shadowRoot.querySelector('.dropzone_description');
 		dropzoneDescription.style.display = 'none';
 	}

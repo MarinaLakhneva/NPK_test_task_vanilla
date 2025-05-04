@@ -8,12 +8,6 @@ class Loading extends HTMLElement {
 	
 	render() {
 		const styles =`
-			.modal_content_loading{
-				display: flex;
-				justify-content: center;
-				margin-top: 41px;
-			}
-			
 			.throbber {
 				animation: rotate 2s linear infinite;
 				transform-origin: center;
@@ -30,9 +24,7 @@ class Loading extends HTMLElement {
 		`;
 
 		this.shadowRoot.innerHTML = `
-			<div class='modal_content_loading'>
-				<img src="${Throbber}" class='throbber' alt='throbber' />
-			</div>
+			<img src="${Throbber}" class='throbber' alt='throbber' />
 			<style>${styles}</style>
 		`;
 	}
