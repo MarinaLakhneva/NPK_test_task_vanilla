@@ -72,6 +72,39 @@ class InputDesign extends HTMLElement {
 			</div>
 			<style>${styles}</style>
 		`;
+		
+		const clearButton = this.shadowRoot.querySelector('.btn_clear');
+		clearButton.addEventListener('click', () => {
+			if (this.inputElement) {
+				this.inputElement.value = '';
+				this.dispatchEvent(new CustomEvent('input-change', {
+					detail: { value: '' },
+					bubbles: true,
+					composed: true
+				}));
+			} else {
+				console.error('Input element not found!');
+			}
+		});
+		
+
+		this.inputElement = this.shadowRoot.querySelector('.input_name_file');
+		
+		this.inputElement.addEventListener('input', (e) => {
+			const value = e.target.value;
+			
+			if (value.trim() === '') {
+				clearButton.style.cursor = 'auto';
+			} else {
+				clearButton.style.cursor = 'pointer';
+			}
+			
+			this.dispatchEvent(new CustomEvent('input-change', {
+				detail: { value: e.target.value },
+				bubbles: true,
+				composed: true
+			}));
+		});
 	}
 }
 

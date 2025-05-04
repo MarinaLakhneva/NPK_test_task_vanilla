@@ -8,7 +8,8 @@ class ButtonOpenModal extends HTMLElement {
 		this.isOpen = false;
 		
 		this.handleOpenModal = this.handleOpenModal.bind(this);
-
+		this.handleCloseModal = this.handleCloseModal.bind(this);
+		
 		this.render();
 	}
 	
@@ -17,13 +18,18 @@ class ButtonOpenModal extends HTMLElement {
 		this.render();
 	}
 	
+	handleCloseModal() {
+		this.isOpen = false;
+		this.render();
+	}
+	
 	render() {
 		const styles =`
 			.btn_open_modal {
-					border: none;
 					height: 56px;
 					max-width: 277px;
 					width: 100%;
+					border: none;
 					border-radius: 30px;
 					font-size: 20px;
 					font-weight: 500;
@@ -41,6 +47,11 @@ class ButtonOpenModal extends HTMLElement {
 		
 		const openButton = this.shadowRoot.querySelector('.btn_open_modal');
 		openButton.addEventListener('click', this.handleOpenModal);
+		
+		if (this.isOpen) {
+			const modal = this.shadowRoot.querySelector('modal-window');
+			modal.addEventListener('close', this.handleCloseModal);
+		}
 	}
 }
 

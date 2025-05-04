@@ -22,7 +22,7 @@ class FileDropzone extends HTMLElement {
 				border-radius: 30px;
 				border: 1px solid #A5A5A5;
 				background-color: rgba(255, 255, 255, 0.4);
-				transition: background-color 400ms ease;
+				transition: border 400ms ease;
 			}
 			.block_uploading_file.drag_active{
 				border: 1px solid #5F5CF0;
@@ -41,13 +41,13 @@ class FileDropzone extends HTMLElement {
 			
 			.img_back{
 				position: absolute;
-				left: 40px;
+				left: 38px;
 				top: 24px;
 			}
 			
 			.img_front{
 				position: absolute;
-				right: 40px;
+				right: 48px;
 				top: 22px;
 			}
 
@@ -71,6 +71,73 @@ class FileDropzone extends HTMLElement {
 				font-size: 14px;
 				color: #5F5CF0;
 			}
+			
+			.file_uploaded{
+				display: flex;
+				flex-direction: column;
+				justify-content: center;
+				opacity: 1; //1->0
+				transition: opacity 400ms ease;
+			}
+			
+			.file_uploaded_title{
+				display: flex;
+				justify-content: center;
+				font-weight: 600;
+				font-size: 18px;
+				color: #5F5CF0;
+			}
+			
+			.file_uploaded_container{
+				display: flex;
+				flex-direction: column;
+				justify-content: center;
+				margin-top: 31px;
+				font-weight: 600;
+				font-size: 14px;
+				color: #5F5CF0;
+				gap: 9px;
+			}
+			
+			.file_uploaded_name{
+				margin: 0;
+				padding: 0;
+				font-weight: 500;
+				font-size: 12px;
+				color: #5F5CF0;
+			}
+			
+			.file_uploaded_description{
+				display: flex;
+				flex-direction: column;
+				gap: 5px;
+			}
+			
+			.file_uploaded_description_container{
+				display: flex;
+				flex-direction: row;
+				justify-content: space-between;
+			}
+			
+			.file_uploaded_description_title{
+				margin: 0;
+				padding: 0;
+				font-weight: 400;
+				font-size: 12px;
+				color: #5F5CF0;
+			}
+			
+			.file_uploaded_description_value{
+				margin: 0;
+				padding: 0;
+				display: flex;
+				flex-direction: row;
+				justify-content: flex-start;
+				width: 70px;
+				font-weight: 400;
+				font-size: 12px;
+				color: #5F5CF0;
+			}
 		`;
 		
 
@@ -85,9 +152,45 @@ class FileDropzone extends HTMLElement {
 				<span class="animation_blur"></span>
 			</div>
 			<p class="animation_description">Перенесите ваш файл сюда</p>
+			
+			<div class="file_uploaded" style="display:none">
+				<p class="file_uploaded_title">Успешно добавлен</p>
+				<div class="file_uploaded_container">
+					<p class="file_uploaded_name"></p>
+					<div class="file_uploaded_description">
+						<div class="file_uploaded_description_container">
+							<p class="file_uploaded_description_title">Размер файла:</p>
+							<p class="file_uploaded_description_value file_uploaded_description_size"></p>
+						</div>
+						<div class="file_uploaded_description_container">
+							<p class="file_uploaded_description_title">Дата изменения:</p>
+							<p class="file_uploaded_description_value file_uploaded_description_lastModified"></p>
+						</div>
+					</div>
+				</div>
+			</div>
 		`;
 		
 		this.shadowRoot.append(style, container);
+		this.startAnimation();
+	}
+	
+	startAnimation() {
+		this.offset = 0;
+		this.direction = 1;
+		
+		this.animationInterval = setInterval(() => {
+			this.offset += this.direction*0.5;
+			if (Math.abs(this.offset) >= 5) {
+				this.direction *= -1;
+			}
+			
+			const imgBack = this.shadowRoot.querySelector('.img_back');
+			const imgFront = this.shadowRoot.querySelector('.img_front');
+			
+			imgBack.style.transform = `translateY(${this.offset*0.5}px)`;
+			imgFront.style.transform = `translateY(-${this.offset*1.3}px)`;
+		}, 50);
 	}
 	
 	addEventListeners() {
@@ -124,11 +227,43 @@ class FileDropzone extends HTMLElement {
 			const file = files[0];
 			
 			if (file.type === 'text/csv' || file.name.endsWith('.csv')) {
-				console.log('Файл загружен:', file.name, file.size);
+				const date = new Date(file.lastModified);
+				const fileLastModified = `${String(date.getDate()).padStart(2, '0')}/${String(date.getMonth() + 1).padStart(2, '0')}/${date.getFullYear()}`;
+				
+				const uploadedContainer = this.shadowRoot.querySelector('.file_uploaded');
+				uploadedContainer.style.display = 'block';
+				
+				const uploadedNameDisplay = this.shadowRoot.querySelector('.file_uploaded_name');
+				uploadedNameDisplay.textContent = file.name;
+				
+				const uploadedSizeDisplay = this.shadowRoot.querySelector('.file_uploaded_description_size');
+				uploadedSizeDisplay.textContent = `${file.size}б`;
+				
+				const uploadedLastModifiedDisplay = this.shadowRoot.querySelector('.file_uploaded_description_lastModified');
+				uploadedLastModifiedDisplay.textContent = fileLastModified;
+				
+				const animationContainer = this.shadowRoot.querySelector('.animation_container');
+				animationContainer.style.display = 'none';
+				const animationDescriptionContainer = this.shadowRoot.querySelector('.animation_description');
+				animationDescriptionContainer.style.display = 'none';
+				
+				
+
+				const fileEvent = new CustomEvent('file-uploaded', {
+					detail: { file },
+					bubbles: true,
+					composed: true
+				});
+				this.dispatchEvent(fileEvent);
+				
 			} else {
 				alert('Пожалуйста, загрузите файл формата CSV.');
 			}
 		}
+	}
+	
+	disconnectedCallback() {
+		clearInterval(this.animationInterval);
 	}
 }
 
