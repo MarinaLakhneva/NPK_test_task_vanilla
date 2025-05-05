@@ -256,12 +256,9 @@ class FileDropzone extends HTMLElement {
 		this.shadowRoot.querySelector('.file_uploaded_description_size').textContent = `${file.size}б`;
 		this.shadowRoot.querySelector('.file_uploaded_description_lastModified').textContent = fileLastModified;
 		
-		const uploadedContainer = this.shadowRoot.querySelector('.file_uploaded');
-		uploadedContainer.style.opacity = "1";
-		const dropzone = this.shadowRoot.querySelector('.dropzone');
-		dropzone.style.display = 'none';
-		const dropzoneDescription = this.shadowRoot.querySelector('.dropzone_description');
-		dropzoneDescription.style.display = 'none';
+		this.shadowRoot.querySelector('.dropzone').style.display = 'none';
+		this.shadowRoot.querySelector('.dropzone_description').style.display = 'none';
+		this.shadowRoot.querySelector('.file_uploaded').style.opacity = "1";
 	}
 	
 	dispatchFileUploadedEvent(file) {
@@ -275,10 +272,6 @@ class FileDropzone extends HTMLElement {
 	
 	getUploadedFile() {
 		return this.fileData;
-	}
-	
-	disconnectedCallback() {
-		clearInterval(this.animationInterval);
 	}
 }
 

@@ -156,17 +156,6 @@ class InputDesign extends HTMLElement {
 	getInputValue() {
 		return this.inputElement.value;
 	}
-	
-	setInputValue(value) {
-		this.inputElement.value = value;
-		this.updateClearButton(value);
-		
-		this.dispatchEvent(new CustomEvent('input-change', {
-			detail: {value},
-			bubbles: true,
-			composed: true
-		}));
-	}
 }
 
 customElements.define('input-design', InputDesign);

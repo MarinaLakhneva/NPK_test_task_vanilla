@@ -1,8 +1,20 @@
 import './FileDropzone';
 import './InputDesign';
 import './Loading';
+import './RequestResponse';
 
 import {uploadFile} from '../app/api/fileUpload';
+
+const options = {
+	year: 'numeric',
+	month: '2-digit',
+	day: '2-digit',
+	hour: '2-digit',
+	minute: '2-digit',
+	second: '2-digit',
+	hour12: false,
+	timeZone: 'UTC'
+};
 
 class Modal extends HTMLElement {
 	constructor() {
@@ -12,7 +24,8 @@ class Modal extends HTMLElement {
 		this.initializeElements();
 		
 		this.uploadedFile = null;
-		this.inputFileName = null;
+		this.inputFileName = '';
+		this.data = null;
 		
 		this.updateValues();
 	}
@@ -177,7 +190,7 @@ class Modal extends HTMLElement {
 				transition: opacity 400ms ease;
 			}
 			
-			.modal_content_request_response{
+			.modal_content_response{
 				display: none;
 				padding: 10px 8px 0 8px;
 				box-sizing: border-box;
@@ -208,6 +221,11 @@ class Modal extends HTMLElement {
 			}
 		`;
 		
+		let responseContent;
+		if(this.data){
+			responseContent = `<request-response data-file='${JSON.stringify(this.data)}'></request-response>`;
+		}
+
 		this.shadowRoot.innerHTML = `
 			<div class="background_blur">
 				<div class='modal'>
@@ -236,8 +254,8 @@ class Modal extends HTMLElement {
 							<div class='modal_content_loading'>
 								<loading-element></loading-element>
 							</div>
-							<div class="modal_content_request_response">
-							
+							<div class='modal_content_response'>
+								${responseContent}
 							</div>
 						</div>
 						<div class="modal_footer">
@@ -249,81 +267,112 @@ class Modal extends HTMLElement {
 			<style>${styles}</style>
 		`;
 	}
-	initializeElements() {
+
+	cacheDOMElements() {
 		this.closeButton = this.shadowRoot.querySelector('.btn_close_modal');
+		this.closeButton.addEventListener('click', () => {
+			this.dispatchEvent(new Event('close'));
+		});
+		
 		this.submitButton = this.shadowRoot.querySelector('.btn_submit');
 		this.backgroundDef = this.shadowRoot.querySelector('.background_color_default');
 		this.backgroundErr = this.shadowRoot.querySelector('.background_color_error');
 		this.backgroundSuc = this.shadowRoot.querySelector('.background_color_success');
-		
 		this.fileDropzone = this.shadowRoot.querySelector('file-dropzone');
 		this.inputDesign = this.shadowRoot.querySelector('input-design');
-		
-		const updateSubmitButtonState = () => {
-			this.updateValues();
-			if(this.uploadedFile.error){
-				this.backgroundErr.classList.add('active_error');
-				this.backgroundErr.classList.add('active_default');
-				this.shadowRoot.querySelector('.modal_description').textContent = this.uploadedFile.errorMsg;
-			}
-			else {
-				this.backgroundErr.classList.remove('active_error');
-				this.backgroundErr.classList.remove('active_default');
-				this.shadowRoot.querySelector('.modal_description').textContent = 'Перед загрузкой дайте имя файлу';
-			}
-			
-			const isSubmitEnabled = this.uploadedFile.uploadedFile && this.inputFileName;
-			this.submitButton.disabled = !isSubmitEnabled;
-			this.submitButton.style.backgroundColor = isSubmitEnabled ? '#5F5CF0' : '';
-			this.submitButton.style.cursor = isSubmitEnabled ? 'pointer' : 'auto';
-		};
+	}
+	initializeElements() {
+		this.cacheDOMElements();
 		
 		const handleInputChange = () => {
-			updateSubmitButtonState();
+			this.updateSubmitButtonState();
 		};
 		
 		this.fileDropzone.addEventListener('file-uploaded', handleInputChange);
 		this.inputDesign.addEventListener('input-change', handleInputChange);
 		
-		updateSubmitButtonState();
-		
-		this.closeButton.addEventListener('click', () => {
-			this.dispatchEvent(new Event('close'));
-		});
+		this.updateSubmitButtonState();
 	}
+	
+	updateSubmitButtonState = () => {
+		this.updateValues();
+		
+		this.modalDescription = this.shadowRoot.querySelector('.modal_description');
+		if(this.uploadedFile.error){
+			this.backgroundErr.classList.add('active_error', 'active_default');
+			this.modalDescription.textContent = this.uploadedFile.errorMsg;
+		}
+		else {
+			this.backgroundErr.classList.remove('active_error', 'active_default');
+			this.modalDescription.textContent = 'Перед загрузкой дайте имя файлу';
+		}
+		
+		const isSubmitEnabled = this.uploadedFile.uploadedFile && this.inputFileName;
+		this.submitButton.disabled = !isSubmitEnabled;
+		this.submitButton.style.backgroundColor = isSubmitEnabled ? '#5F5CF0' : '';
+		this.submitButton.style.cursor = isSubmitEnabled ? 'pointer' : 'auto';
+	};
 	
 	updateValues() {
 		this.uploadedFile = this.fileDropzone.getUploadedFile();
 		this.inputFileName = this.inputDesign.getInputValue();
 	}
 	
+	hideElements(selectors) {
+		selectors.forEach(selector => {
+			const element = this.shadowRoot.querySelector(selector);
+			if (element) element.style.display = 'none';
+		});
+	}
+	
 	async handleSubmit() {
 		this.shadowRoot.querySelector('.modal_title').textContent = 'Загрузка файла';
 		
-		this.shadowRoot.querySelector('.modal_description').style.display = 'none';
-		this.shadowRoot.querySelector('.modal_content_content').style.display = 'none';
-		this.shadowRoot.querySelector('.modal_footer').style.display = 'none';
+		this.hideElements(['.modal_description', '.modal_content_content', '.modal_footer']);
 		
 		this.shadowRoot.querySelector('.modal').style.height = '264px';
 		this.shadowRoot.querySelector('.modal_content').style.top = '57px';
 		this.shadowRoot.querySelector('.modal_content_loading').style.display = 'flex';
 		
 		try {
-			const data = await uploadFile(this.uploadedFile.uploadedFile, this.fileName);
-			console.log(data);
-			
-			this.shadowRoot.querySelector('.modal_content_loading').style.display = 'none';
-			this.shadowRoot.querySelector('.modal_content_request_response').style.display = 'flex';
-			this.shadowRoot.querySelector('.modal_title').textContent = 'Файл успешно загружен';
-			
-			this.backgroundDef.classList.remove('active_default');
-			this.backgroundSuc.classList.add('active_success');
+			const data = await uploadFile(this.uploadedFile.uploadedFile, this.inputFileName);
+			const date = new Date(data.timestamp);
+			const timestamp = date.toLocaleString('en-GB', options).replace(',', '');
+			this.data = {
+				status: 'success',
+				filename: ((data.filename).split('_'))[2],
+				name: data.name,
+				timestamp: timestamp,
+				message: data.message,
+				errMessage: ''
+			};
 		} catch (err) {
 			if (err.status && err.message) {
-				this.backgroundErr.classList.add('active_error');
-				this.shadowRoot.querySelector('.modal_title').textContent = 'Ошибка в загрузке файла';
-				//this.shadowRoot.querySelector('.modal_description').textContent = `Error: ${err.status} ${err.message}`;
+				this.data = {
+					status: 'error',
+					filename: '',
+					name: '',
+					timestamp: '',
+					message: '',
+					errMessage: `Error: ${err.status} ${err.message}`
+				};
 			}
+		}
+		finally {
+			this.render();
+			this.cacheDOMElements()
+			
+			this.hideElements(['.modal_content_content', '.modal_description', '.modal_footer', '.modal_content_loading']);
+			this.shadowRoot.querySelector('.modal_content_response').style.display = 'flex';
+			
+			this.shadowRoot.querySelector('.modal').style.height = '264px';
+			this.shadowRoot.querySelector('.modal_content').style.top = '57px';
+			
+			this.backgroundDef.classList.add('active_default');
+			
+			const response = this.data.status === 'success';
+			this.shadowRoot.querySelector('.modal_title').textContent = response ? 'Файл успешно загружен' : 'Ошибка в загрузке файла';
+			this.backgroundSuc.classList.add(response ? 'active_success' : 'active_error');
 		}
 	};
 }
