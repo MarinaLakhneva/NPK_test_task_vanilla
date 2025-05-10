@@ -1,4 +1,4 @@
-import "./Modal.js";
+import './Modal.js';
 
 class ButtonOpenModal extends HTMLElement {
 	constructor() {
@@ -26,9 +26,9 @@ class ButtonOpenModal extends HTMLElement {
 	render() {
 		const styles =`
 			.btn_open_modal {
-					height: 56px;
 					max-width: 277px;
 					width: 100%;
+					height: 56px;
 					border: none;
 					border-radius: 30px;
 					font-size: 20px;
@@ -45,12 +45,9 @@ class ButtonOpenModal extends HTMLElement {
 			<style>${styles}</style>
 		`;
 		
-		const openButton = this.shadowRoot.querySelector('.btn_open_modal');
-		openButton.addEventListener('click', this.handleOpenModal);
-		
+		this.shadowRoot.querySelector('.btn_open_modal').addEventListener('click', this.handleOpenModal);
 		if (this.isOpen) {
-			const modal = this.shadowRoot.querySelector('modal-window');
-			modal.addEventListener('close', this.handleCloseModal);
+			this.shadowRoot.querySelector('modal-window').addEventListener('close', this.handleCloseModal);
 		}
 	}
 }

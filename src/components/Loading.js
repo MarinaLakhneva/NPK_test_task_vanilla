@@ -1,4 +1,5 @@
 import Throbber from '../assets/throbber.svg';
+
 class Loading extends HTMLElement {
 	constructor() {
 		super();
@@ -9,6 +10,10 @@ class Loading extends HTMLElement {
 	render() {
 		const styles =`
 			.throbber {
+				display: flex;
+				align-items: center;
+			  width: 63px;
+        height: 63px;
 				animation: rotate 2s linear infinite;
 				transform-origin: center;
 			}
@@ -24,10 +29,10 @@ class Loading extends HTMLElement {
 		`;
 
 		this.shadowRoot.innerHTML = `
-			<img src="${Throbber}" class='throbber' alt='throbber' />
+			<img src="${Throbber}" class='throbber' alt='throbber'/>
 			<style>${styles}</style>
 		`;
 	}
 }
 
-customElements.define('loading-element', Loading);
+customElements.define('loading-content', Loading);

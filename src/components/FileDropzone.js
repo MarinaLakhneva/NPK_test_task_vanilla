@@ -1,31 +1,41 @@
 import Dir from '../assets/dir.svg';
+
 import File_back from '../assets/file_back.svg';
 import File_front from '../assets/file_front.svg';
+
+import {date as dateFormat} from '../consts';
 
 class FileDropzone extends HTMLElement {
 	constructor() {
 		super();
 		this.attachShadow({ mode: 'open' });
 		this.render();
-		this.initializeElements();
-		this.setupEventListeners();
+		
 		this.fileData = {
 			uploadedFile: null,
 			error: false,
 			errorMsg: ''
 		};
+		
+		this.initializeElements();
+		this.setupEventListeners();
 	}
 	
 	render() {
 		const styles =`
+			p{
+			 	margin: 0;
+				padding: 0;
+			}
+			
 			.block_uploading_file{
 				margin-top: 26.33px;
 				padding: 39px 29px 31.24px 27px;
 				box-sizing: border-box;
 				width: 100%;
 				height: 229px;
-				border-radius: 30px;
 				border: 1px solid #A5A5A5;
+				border-radius: 30px;
 				background-color: rgba(255, 255, 255, 0.4);
 				transition: border 400ms ease;
 			}
@@ -86,8 +96,6 @@ class FileDropzone extends HTMLElement {
 			}
 			
 			.file_uploaded_title{
-				margin: 0;
-				padding: 0;
 				display: flex;
 				justify-content: center;
 				font-weight: 600;
@@ -107,8 +115,6 @@ class FileDropzone extends HTMLElement {
 			}
 			
 			.file_uploaded_name{
-				margin: 0;
-				padding: 0;
 				font-weight: 500;
 				font-size: 12px;
 				color: #5F5CF0;
@@ -127,16 +133,12 @@ class FileDropzone extends HTMLElement {
 			}
 			
 			.file_uploaded_description_title{
-				margin: 0;
-				padding: 0;
 				font-weight: 400;
 				font-size: 12px;
 				color: #5F5CF0;
 			}
 			
 			.file_uploaded_description_value{
-				margin: 0;
-				padding: 0;
 				display: flex;
 				flex-direction: row;
 				justify-content: flex-start;
@@ -228,12 +230,33 @@ class FileDropzone extends HTMLElement {
 		const file = files[0];
 		
 		if (this.isValidFile(file)) {
-			this.fileData = {
-				uploadedFile: file,
-				error: false,
-				errorMsg: ''
-			};
-			this.displayFileInfo(file);
+			if(files.length > 1){
+				this.fileData = {
+					uploadedFile: null,
+					error: true,
+					errorMsg: 'Загрузить можно только один файл'
+				};
+			}
+			else {
+				if (file.size > 1073741824) {
+					this.fileData = {
+						uploadedFile: null,
+						error: true,
+						errorMsg: 'Размер файла не должен превышать 1ГБ'
+					};
+				}
+				else {
+					const csvDisplayElement = document.getElementById('CsvDisplay');
+					csvDisplayElement.setFile(file);
+					
+					this.fileData = {
+						uploadedFile: file,
+						error: false,
+						errorMsg: ''
+					};
+					this.displayFileInfo(file);
+				}
+			}
 		} else {
 			this.fileData = {
 				uploadedFile: null,
@@ -250,11 +273,11 @@ class FileDropzone extends HTMLElement {
 	
 	displayFileInfo(file) {
 		const date = new Date(file.lastModified);
-		const fileLastModified = `${String(date.getDate()).padStart(2, '0')}/${String(date.getMonth() + 1).padStart(2, '0')}/${date.getFullYear()}`;
-		
+		const fileTimestamp = date.toLocaleString('en-GB', dateFormat).replace(',', '');
+
 		this.shadowRoot.querySelector('.file_uploaded_name').textContent = file.name;
 		this.shadowRoot.querySelector('.file_uploaded_description_size').textContent = `${file.size}б`;
-		this.shadowRoot.querySelector('.file_uploaded_description_lastModified').textContent = fileLastModified;
+		this.shadowRoot.querySelector('.file_uploaded_description_lastModified').textContent = fileTimestamp;
 		
 		this.shadowRoot.querySelector('.dropzone').style.display = 'none';
 		this.shadowRoot.querySelector('.dropzone_description').style.display = 'none';

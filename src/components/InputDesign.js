@@ -3,13 +3,14 @@ class InputDesign extends HTMLElement {
 		super();
 		this.attachShadow({ mode: 'open' });
 		this.render();
+		
 		this.initializeElements();
 		this.setupEventListeners();
 	}
 	
 	render() {
 		const styles =`
-			.modal_input_container{
+			.input_container{
 				display: flex;
 				justify-content: space-between;
 				align-items: center;
@@ -26,19 +27,20 @@ class InputDesign extends HTMLElement {
 				transition: all ease 400ms;
 			}
 			
-			.modal_input_container.hover {
+			.input_container.hover {
 				background-color: #BBB9D2;
 			}
 			
-			.modal_input_container:hover{
+			.input_container:hover{
 				border: 1px solid #5F5CF0;
 			}
 			
-			.modal_input_container.active {
+			.input_container.active {
         border-color: #5F5CF0;
       }
 
 			.input_name_file{
+				width: 100%;
 			  border: none;
         outline: none;
 				background-color: #F1F1F1;
@@ -59,14 +61,13 @@ class InputDesign extends HTMLElement {
 			}
 			
 			.btn_clear{
-			  border: none;
+				display: flex;
+				justify-content: center;
+				align-items: center;
 			  margin: 0;
 			  padding: 0;
 			  border: none;
 			  font-family: 'Inter', sans-serif;
-				display: flex;
-				justify-content: center;
-				align-items: center;
 				border-radius: 33px;
 				cursor: auto;
 			}
@@ -77,7 +78,7 @@ class InputDesign extends HTMLElement {
 		`;
 		
 		this.shadowRoot.innerHTML = `
-			<div class="modal_input_container">
+			<div class="input_container">
 				<input
 					class="input_name_file"
 					placeholder="Название файла"
@@ -92,12 +93,12 @@ class InputDesign extends HTMLElement {
 		`;
 	}
 	initializeElements() {
-		this.inputContainer = this.shadowRoot.querySelector('.modal_input_container');
+		this.inputContainer = this.shadowRoot.querySelector('.input_container');
 		this.inputElement = this.shadowRoot.querySelector('.input_name_file');
 		this.clearButton = this.shadowRoot.querySelector('.btn_clear');
 		
 		this.setupEventListeners();
-		this.updateClearButton();
+		this.updateClearButtonState();
 	}
 	
 	setupEventListeners() {
@@ -119,7 +120,7 @@ class InputDesign extends HTMLElement {
 	
 	handleInputChange(event) {
 		const value = event.target.value;
-		this.updateClearButton(value);
+		this.updateClearButtonState(value);
 		
 		this.dispatchEvent(new CustomEvent('input-change', {
 			detail: { value },
@@ -128,7 +129,7 @@ class InputDesign extends HTMLElement {
 		}));
 	}
 	
-	updateClearButton(value = '') {
+	updateClearButtonState(value = '') {
 		this.clearButton.disabled = value.trim() === '';
 		this.clearButton.style.cursor = value.trim() === '' ? 'auto' : 'pointer';
 		
@@ -141,7 +142,7 @@ class InputDesign extends HTMLElement {
 	
 	clearInput() {
 		this.inputElement.value = '';
-		this.updateClearButton();
+		this.updateClearButtonState();
 		
 		this.inputElement.classList.remove('hover');
 		this.inputContainer.classList.remove('hover');

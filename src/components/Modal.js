@@ -4,34 +4,33 @@ import './Loading';
 import './RequestResponse';
 
 import {uploadFile} from '../app/api/fileUpload';
-
-const options = {
-	year: 'numeric',
-	month: '2-digit',
-	day: '2-digit',
-	hour: '2-digit',
-	minute: '2-digit',
-	second: '2-digit',
-	hour12: false,
-	timeZone: 'UTC'
-};
+import {dateTime} from '../consts';
 
 class Modal extends HTMLElement {
 	constructor() {
 		super();
 		this.attachShadow({ mode: 'open' });
 		this.render();
-		this.initializeElements();
-
+		
 		this.uploadedFile = null;
 		this.inputFileName = '';
 		this.data = null;
-
+		
+		this.initializeElements();
 		this.updateValues();
 	}
 
 	render() {
 		const styles =`
+			p{
+				margin: 0;
+				padding: 0;
+			}
+			
+			button{
+				border: none;
+			}
+		
 			.background_blur{
 				position: fixed;
 				display: flex;
@@ -81,7 +80,6 @@ class Modal extends HTMLElement {
 				transition: opacity 1s ease;
 				opacity: 1;
 			}
-			
 			.active_default {
 				opacity: 0;
 			}
@@ -95,7 +93,6 @@ class Modal extends HTMLElement {
 				transition: opacity 1s ease;
 				opacity: 0;
 			}
-			
 			.active_error {
 				opacity: 1;
 			}
@@ -109,7 +106,6 @@ class Modal extends HTMLElement {
 				transition: opacity 1s ease;
 				opacity: 0;
 			}
-			
 			.active_success{
 				opacity: 1;
 			}
@@ -123,11 +119,9 @@ class Modal extends HTMLElement {
 			}
 			
 			.btn_close_modal{
-				border: none;
 				display: flex;
 				align-items: center;
 				justify-content: center;
-				box-sizing: border-box;
 				width: 34px;
 				height: 34px;
 				border-radius: 100%;
@@ -135,11 +129,9 @@ class Modal extends HTMLElement {
 				cursor: pointer;
 				transition: all ease-out 0.6s;
 			}
-			
 			.btn_close_modal:hover{
 				background-color: #F1F1F1;
 			}
-			
 			.btn_close_modal:hover svg path {
 				fill: #5F5CF0;
 			}
@@ -153,8 +145,6 @@ class Modal extends HTMLElement {
 			}
 
 			.modal_title{
-				margin: 0;
-				padding: 0;
 				font-weight: 600;
 				font-size: 20px;
 				line-height: 24px;
@@ -162,8 +152,6 @@ class Modal extends HTMLElement {
 			}
 			
 			.modal_description{
-			  margin: 0;
-				padding: 0;
 				font-weight: 300;
 				font-size: 14px;
 				color: #ffffff;
@@ -206,11 +194,10 @@ class Modal extends HTMLElement {
 			}
 			
 			.btn_submit{
-				border: none;
 				padding: 16px 88px;
 				box-sizing: border-box;
-				height: 56px;
 				width: 100%;
+				height: 56px;
 				border-radius: 30px;
 				background: #BBB9D2;
 				font-weight: 500;
@@ -252,7 +239,7 @@ class Modal extends HTMLElement {
 								<file-dropzone></file-dropzone>
 							</div>
 							<div class='modal_content_loading'>
-								<loading-element></loading-element>
+								<loading-content></loading-content>
 							</div>
 							<div class='modal_content_response'>
 								${responseContent}
@@ -270,10 +257,7 @@ class Modal extends HTMLElement {
 
 	cacheDOMElements() {
 		this.closeButton = this.shadowRoot.querySelector('.btn_close_modal');
-		this.closeButton.addEventListener('click', () => {
-			this.dispatchEvent(new Event('close'));
-		});
-
+		
 		this.backgroundBlur = this.shadowRoot.querySelector('.background_blur');
 		this.submitButton = this.shadowRoot.querySelector('.btn_submit');
 		this.backgroundDef = this.shadowRoot.querySelector('.background_color_default');
@@ -281,6 +265,13 @@ class Modal extends HTMLElement {
 		this.backgroundSuc = this.shadowRoot.querySelector('.background_color_success');
 		this.fileDropzone = this.shadowRoot.querySelector('file-dropzone');
 		this.inputDesign = this.shadowRoot.querySelector('input-design');
+		
+		this.closeButton.addEventListener('click', () => {
+			this.backgroundBlur.style.opacity = "0";
+			this.backgroundBlur.addEventListener('transitionend', () => {
+				this.dispatchEvent(new Event('close'));
+			}, { once: true });
+		});
 	}
 
 	initializeElements() {
@@ -340,7 +331,8 @@ class Modal extends HTMLElement {
 		try {
 			const data = await uploadFile(this.uploadedFile.uploadedFile, this.inputFileName);
 			const date = new Date(data.timestamp);
-			const timestamp = date.toLocaleString('en-GB', options).replace(',', '');
+			const timestamp = date.toLocaleString('en-GB', dateTime).replace(',', '');
+			
 			this.data = {
 				status: 'success',
 				filename: ((data.filename).split('_'))[2],
@@ -362,15 +354,15 @@ class Modal extends HTMLElement {
 			this.cacheDOMElements()
 
 			this.backgroundBlur.style.opacity = "1";
-			this.hideElements(['.modal_content_content', '.modal_description', '.modal_footer', '.modal_content_loading']);
+			this.hideElements(['.modal_description', '.modal_content_content', '.modal_content_loading', '.modal_footer']);
 
 			this.shadowRoot.querySelector('.modal').style.height = '264px';
 			this.shadowRoot.querySelector('.modal_content').style.top = '57px';
 			this.shadowRoot.querySelector('.modal_content_response').style.display = 'flex';
-
-			this.backgroundDef.classList.add('active_default');
+			
 			const response = this.data.status === 'success';
 			this.shadowRoot.querySelector('.modal_title').textContent = response ? 'Файл успешно загружен' : 'Ошибка в загрузке файла';
+			this.backgroundDef.classList.add('active_default');
 			this.backgroundSuc.classList.add(response ? 'active_success' : 'active_error');
 		}
 	};

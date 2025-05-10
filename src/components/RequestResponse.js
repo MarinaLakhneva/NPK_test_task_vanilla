@@ -7,12 +7,9 @@ class RequestResponse extends HTMLElement {
 		super();
 		this.attachShadow({ mode: 'open' });
 		this.render();
+		
 		this.error = false;
 		this.initializeElements();
-	}
-	
-	attributeChangedCallback(name, oldValue, newValue) {
-		this.render();
 	}
 	
 	render() {
