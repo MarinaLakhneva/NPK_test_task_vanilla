@@ -1,10 +1,12 @@
-import './FileDropzone';
-import './InputDesign';
-import './Loading';
-import './RequestResponse';
+import '../../../features/FileDropzone';
+import '../../../entities/InputDesign';
+import '../../../shared/components/Loading';
+import '../../../shared/components/Modal/RequestResponse';
 
-import {uploadFile} from '../app/api/fileUpload';
-import {dateTime} from '../consts';
+import {uploadFile} from '../../../app/api/fileUpload';
+import {readCsvFile} from '../../../app/fileProcessing';
+
+import {dateTime} from '../../constants';
 
 class Modal extends HTMLElement {
 	constructor() {
@@ -203,7 +205,7 @@ class Modal extends HTMLElement {
 				font-weight: 500;
 				font-size: 20px;
 				color: #ffffff;
-				transition: background-color 400ms ease;
+				transition: all 400ms ease;
 				cursor: auto;
 			}
 		`;
@@ -270,6 +272,7 @@ class Modal extends HTMLElement {
 			this.backgroundBlur.style.opacity = "0";
 			this.backgroundBlur.addEventListener('transitionend', () => {
 				this.dispatchEvent(new Event('close'));
+				readCsvFile(this.uploadedFile.uploadedFile);
 			}, { once: true });
 		});
 	}

@@ -1,4 +1,4 @@
-import './Modal.js';
+import '../shared/components/Modal';
 
 class ButtonOpenModal extends HTMLElement {
 	constructor() {
@@ -35,8 +35,13 @@ class ButtonOpenModal extends HTMLElement {
 					font-weight: 500;
 					color: #ffffff;
 					background-color: #5F5CF0;
+					transition: opacity 400ms ease;
 					cursor: pointer;
-				}
+			}
+			
+			.btn_open_modal:hover {
+				opacity: 0.8;
+			}
 		`;
 		
 		this.shadowRoot.innerHTML =`

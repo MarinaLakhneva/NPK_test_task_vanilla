@@ -3,7 +3,7 @@ import Dir from '../assets/dir.svg';
 import File_back from '../assets/file_back.svg';
 import File_front from '../assets/file_front.svg';
 
-import {date as dateFormat} from '../consts';
+import {date as dateFormat} from '../shared/constants';
 
 class FileDropzone extends HTMLElement {
 	constructor() {
@@ -246,9 +246,6 @@ class FileDropzone extends HTMLElement {
 					};
 				}
 				else {
-					const csvDisplayElement = document.getElementById('CsvDisplay');
-					csvDisplayElement.setFile(file);
-					
 					this.fileData = {
 						uploadedFile: file,
 						error: false,

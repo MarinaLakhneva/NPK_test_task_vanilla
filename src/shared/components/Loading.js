@@ -1,4 +1,4 @@
-import Throbber from '../assets/throbber.svg';
+import Throbber from '../../assets/throbber.svg';
 
 class Loading extends HTMLElement {
 	constructor() {

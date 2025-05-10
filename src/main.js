@@ -1,8 +1,33 @@
 import './style.css';
-import './components/ButtonOpenModal';
-import './components/csvDisplay';
+import './entities/ButtonOpenModal';
 
 const styles =`
+			table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+
+      thead tr {
+        position: sticky;
+        top: 0;
+        z-index: 1;
+      }
+      
+      th{
+				background-color: #5F5CF0;
+				color: #ffffff;
+			}
+			
+			td{
+				text-align: center;
+			}
+			
+			th, td{
+				padding: 5px 10px;
+				box-sizing: border-box;
+				border: 1px solid #A5A5A5;
+			}
+			
 			.app{
 			  display: flex;
 			  flex-direction: column;
@@ -11,12 +36,19 @@ const styles =`
 			  gap: 41px;
 			  height: 100vh;
 	    }
+	    
+	    #loading{
+	      display: none;
+	      justify-content: center;
+	    }
 		`;
 
 document.querySelector('#app').innerHTML = `
   <div class="app">
 		<btn-open></btn-open>
-		<csv-display id="CsvDisplay"></csv-display>
+		<div id="loading"><loading-content></loading-content></div>
+		<canvas id="chart"></canvas>
+		<table id="table"></table>
   </div>
   <style>${styles}</style>
 `
