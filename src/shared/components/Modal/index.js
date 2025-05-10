@@ -4,7 +4,7 @@ import '../../../shared/components/Loading';
 import '../../../shared/components/Modal/RequestResponse';
 
 import {uploadFile} from '../../../app/api/fileUpload';
-import {readCsvFile} from '../../../app/fileProcessing';
+import {readCSV} from '../../../app/fileProcessing';
 
 import {dateTime} from '../../constants';
 
@@ -272,7 +272,7 @@ class Modal extends HTMLElement {
 			this.backgroundBlur.style.opacity = "0";
 			this.backgroundBlur.addEventListener('transitionend', () => {
 				this.dispatchEvent(new Event('close'));
-				readCsvFile(this.uploadedFile.uploadedFile);
+				readCSV(this.uploadedFile.uploadedFile);
 			}, { once: true });
 		});
 	}

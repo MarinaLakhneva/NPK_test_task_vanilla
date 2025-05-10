@@ -2,9 +2,11 @@ import { Chart, BarController, LinearScale, BarElement, CategoryScale } from 'ch
 Chart.register(BarController, LinearScale, BarElement, CategoryScale);
 
 const carriage = '\n';
-export function readCsvFile(file) {
+export function readCSV(file) {
+	const content = document.getElementById('container');
 	const loading = document.getElementById('loading');
 	const table = document.getElementById('table');
+	
 	const ctx = document.getElementById('chart').getContext('2d');
 	let chartData = [];
 	let labels = [];
@@ -64,8 +66,14 @@ export function readCsvFile(file) {
 				const td = document.createElement('td');
 				const dt = d.trim();
 				const input = document.createElement('input');
+				
 				input.type = 'text';
 				input.value = dt;
+				
+				input.addEventListener('input', function () {
+					chartData[index - 1] = parseFloat(input.value);
+					curChart.update();
+				});
 				
 				td.appendChild(input);
 				tr.appendChild(td);
@@ -79,7 +87,7 @@ export function readCsvFile(file) {
 		});
 		
 		loading.style.display = 'none';
-		table.style.display = 'table';
+		content.style.display = 'flex';
 		let curChart = new Chart(ctx, {
 			type: 'bar',
 			data: {
@@ -101,7 +109,28 @@ export function readCsvFile(file) {
 			}
 		});
 		
+
+		function downloadCSV() {
+			let csvContent = "data:text/csv;charset=utf-8," + labels.join(";") + carriage;
+			
+			Array.from(tbody.rows).forEach(row => {
+				const rowData = Array.from(row.cells).map(cell => cell.firstChild.value).join(";");
+				csvContent += rowData + carriage;
+			});
+			
+			const encodedUri = encodeURI(csvContent);
+			const link = document.createElement("a");
+			link.setAttribute("href", encodedUri);
+			link.setAttribute("download", "dear.csv");
+			document.body.appendChild(link);
+			
+			link.click();
+			document.body.removeChild(link);
+		}
+		document.getElementById('btn-save').addEventListener('click', downloadCSV);
+		
 		function clearChart() {
+			content.style.display = 'none';
 			if (curChart) {
 				curChart.destroy();
 				curChart = null;

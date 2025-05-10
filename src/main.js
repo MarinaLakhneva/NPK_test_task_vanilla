@@ -3,7 +3,6 @@ import './entities/ButtonOpenModal';
 
 const styles =`
 			table {
-        width: 100%;
         border-collapse: collapse;
       }
 
@@ -36,22 +35,52 @@ const styles =`
 			  gap: 41px;
 	    }
 	    
+	    #container{
+	      display: none;
+			  flex-direction: column;
+			  gap: 10px
+	    }
+	    
 	    #loading{
 	      display: none;
 	      justify-content: center;
 	    }
 	    
-	    #table{
-	      display: none;
-	    }
+	    #chart {
+        max-width: 600px;
+        max-height: 400px;
+        width: 100%;
+        height: auto;
+      }
+      
+	    #btn-save{
+				max-width: 150px;
+				width: 100%;
+				height: 40px;
+				border: none;
+				border-radius: 30px;
+				font-size: 16px;
+				font-weight: 500;
+				color: #ffffff;
+				background-color: #5F5CF0;
+				transition: opacity 400ms ease;
+				cursor: pointer;
+			}
+			
+			#btn-save:hover {
+				opacity: 0.8;
+			}
 		`;
 
 document.querySelector('#app').innerHTML = `
   <div class="app">
 		<btn-open id="open"></btn-open>
 		<div id="loading"><loading-content></loading-content></div>
-		<canvas id="chart"></canvas>
-		<table id="table"></table>
+		<div id="container">
+			<canvas id="chart"></canvas>
+			<button id="btn-save">Скачать</button>
+			<table id="table"></table>
+		</div>
   </div>
   <style>${styles}</style>
 `
