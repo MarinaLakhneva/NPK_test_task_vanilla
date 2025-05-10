@@ -63,4 +63,3 @@ class ButtonOpenModal extends HTMLElement {
 }
 
 customElements.define('btn-open', ButtonOpenModal);
-

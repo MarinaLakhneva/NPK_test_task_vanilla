@@ -6,6 +6,7 @@ export function readCSV(file) {
 	const content = document.getElementById('container');
 	const loading = document.getElementById('loading');
 	const table = document.getElementById('table');
+	let head = [];
 	
 	const ctx = document.getElementById('chart').getContext('2d');
 	let chartData = [];
@@ -47,6 +48,7 @@ export function readCSV(file) {
 			tr.appendChild(th);
 			thead.appendChild(tr);
 			
+			head.push(ht);
 			if (index > 0) {
 				labels.push(ht);
 			}
@@ -109,10 +111,8 @@ export function readCSV(file) {
 			}
 		});
 		
-
 		function downloadCSV() {
-			let csvContent = "data:text/csv;charset=utf-8," + labels.join(";") + carriage;
-			
+			let csvContent = "data:text/csv;charset=utf-8," + head.join(";") + carriage;
 			Array.from(tbody.rows).forEach(row => {
 				const rowData = Array.from(row.cells).map(cell => cell.firstChild.value).join(";");
 				csvContent += rowData + carriage;
