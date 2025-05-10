@@ -31,21 +31,24 @@ const styles =`
 			.app{
 			  display: flex;
 			  flex-direction: column;
-			  padding: 64px 60px 74px 57px;
+			  margin: 64px 60px 74px 57px;
 			  box-sizing: border-box;
 			  gap: 41px;
-			  height: 100vh;
 	    }
 	    
 	    #loading{
 	      display: none;
 	      justify-content: center;
 	    }
+	    
+	    #table{
+	      display: none;
+	    }
 		`;
 
 document.querySelector('#app').innerHTML = `
   <div class="app">
-		<btn-open></btn-open>
+		<btn-open id="open"></btn-open>
 		<div id="loading"><loading-content></loading-content></div>
 		<canvas id="chart"></canvas>
 		<table id="table"></table>

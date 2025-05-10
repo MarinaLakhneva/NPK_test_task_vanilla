@@ -14,6 +14,11 @@ class ButtonOpenModal extends HTMLElement {
 	}
 	
 	handleOpenModal() {
+		const table = document.getElementById('table');
+		while (table.rows.length > 0) {
+			table.deleteRow(0);
+		}
+		
 		this.isOpen = true;
 		this.render();
 	}

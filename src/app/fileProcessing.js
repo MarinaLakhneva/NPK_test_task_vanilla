@@ -4,7 +4,6 @@ Chart.register(BarController, LinearScale, BarElement, CategoryScale);
 const carriage = '\n';
 export function readCsvFile(file) {
 	const loading = document.getElementById('loading');
-	
 	const table = document.getElementById('table');
 	const ctx = document.getElementById('chart').getContext('2d');
 	let chartData = [];
@@ -80,7 +79,8 @@ export function readCsvFile(file) {
 		});
 		
 		loading.style.display = 'none';
-		new Chart(ctx, {
+		table.style.display = 'table';
+		let curChart = new Chart(ctx, {
 			type: 'bar',
 			data: {
 				labels: labels,
@@ -100,6 +100,13 @@ export function readCsvFile(file) {
 				}
 			}
 		});
+		
+		function clearChart() {
+			if (curChart) {
+				curChart.destroy();
+				curChart = null;
+			}
+		}
+		document.getElementById('open').addEventListener('click', clearChart);
 	}
 }
-
