@@ -22,6 +22,7 @@ class RequestResponse extends HTMLElement {
 		const errMessage = data.errMessage || '';
 		const status = data.status || '';
 		
+		// Флаг для отображения нужного блока
 		this.error = (status === 'error');
 		
 		const styles =`
@@ -57,6 +58,7 @@ class RequestResponse extends HTMLElement {
 					<p class="request_response_description">message: ${message}</p>
 				</div>
 			</div>
+			
 			<div class="modal_content_request_response-error">
 				<div class="request_response">
 					<p class="request_response_description">${errMessage}</p>
@@ -74,4 +76,3 @@ class RequestResponse extends HTMLElement {
 }
 
 customElements.define('request-response', RequestResponse);
-

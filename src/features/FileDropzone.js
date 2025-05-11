@@ -150,7 +150,7 @@ class FileDropzone extends HTMLElement {
 		
 		this.shadowRoot.innerHTML = `
 			<div class="block_uploading_file">
-				<input type="file" id="fileInput" accept=".csv" style="display: none" />
+				<input type="file" id="fileInput" accept=".csv" style="display: none"/>
 				<div class="dropzone">
 					<img src="${Dir}" alt='dir' class="img_dir"/>
 					<img src="${File_back}" alt='file' class="img_back"/>
@@ -183,8 +183,8 @@ class FileDropzone extends HTMLElement {
 	}
 	
 	startAnimation() {
-		this.offset = 0;
-		this.direction = 1;
+		this.offset = 0; // Текущее смещение
+		this.direction = 1; // Направление анимации 1 - вниз, -1 - вверх
 		
 		this.animationInterval = setInterval(() => {
 			this.offset += this.direction * 0.5;
@@ -203,6 +203,7 @@ class FileDropzone extends HTMLElement {
 	initializeElements() {
 		this.blockUploadingFile = this.shadowRoot.querySelector('.block_uploading_file');
 		this.dropzone = this.shadowRoot.querySelector('.dropzone');
+		
 		this.fileInput = this.shadowRoot.querySelector('#fileInput');
 	}
 	
@@ -210,13 +211,16 @@ class FileDropzone extends HTMLElement {
 		this.dropzone.addEventListener('click', () => this.fileInput.click());
 		this.fileInput.addEventListener('change', (event) => this.handleFileUpload(event.target.files));
 		
+		// Срабатывает, когда элемент перетаскивается над областью перетаскивания
 		this.dropzone.addEventListener('dragover', (event) => {
 			event.preventDefault();
-			this.blockUploadingFile.classList.add('block_uploading_file_active');
+			this.blockUploadingFile.classList.add('block_uploading_file_active'); // Делаем border голубым
 		});
+		// Срабатывает, когда элемент, находящийся над областью перетаскивания, покидает эту область
 		this.dropzone.addEventListener('dragleave', () => {
 			this.blockUploadingFile.classList.remove('block_uploading_file_active')
 		});
+		// Срабатывает, когда файл сбрасывается в область перетаскивания
 		this.dropzone.addEventListener('drop', (event) => {
 			event.preventDefault();
 			this.blockUploadingFile.classList.remove('block_uploading_file_active');
@@ -226,8 +230,8 @@ class FileDropzone extends HTMLElement {
 	
 	handleFileUpload(files) {
 		if (files.length === 0) return;
-		const file = files[0];
 		
+		const file = files[0];
 		if (this.isValidFile(file)) {
 			if(files.length > 1){
 				this.fileData = {
@@ -284,11 +288,12 @@ class FileDropzone extends HTMLElement {
 		const fileEvent = new CustomEvent('file-uploaded', {
 			detail: { file },
 			bubbles: true,
-			composed: true
+			composed: true // Даем доступ для слушателей вне теневого корня
 		});
 		this.dispatchEvent(fileEvent);
 	}
 	
+	// Функция для получения файла выше по иерархии
 	getUploadedFile() {
 		return this.fileData;
 	}

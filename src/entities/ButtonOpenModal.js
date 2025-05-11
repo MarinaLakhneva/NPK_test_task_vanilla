@@ -15,6 +15,7 @@ class ButtonOpenModal extends HTMLElement {
 	
 	handleOpenModal() {
 		const table = document.getElementById('table');
+		// При открытии модального окна таблица очищается
 		while (table.rows.length > 0) {
 			table.deleteRow(0);
 		}

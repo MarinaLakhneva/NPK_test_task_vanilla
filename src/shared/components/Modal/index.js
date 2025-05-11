@@ -211,6 +211,7 @@ class Modal extends HTMLElement {
 		`;
 
 		let responseContent;
+		// Условный рендеринг
 		if(this.data){
 			responseContent = `<request-response data-file='${JSON.stringify(this.data)}'></request-response>`;
 		}
@@ -219,6 +220,8 @@ class Modal extends HTMLElement {
 			<div class="background_blur">
 				<div class='modal'>
 					<div class="modal_container">
+						<!--поскольку свойство transition не поддерживает плавное изменение linear-gradient,
+						так как этот формат более сложен, чем background, пришлось воспользоваться следующим подходом-->
 						<div class="modal_background">
 							<div class="background_color_default"></div>
 							<div class="background_color_error"></div>
@@ -226,6 +229,7 @@ class Modal extends HTMLElement {
 						</div>
 						<div class="modal_header">
 							<button class="btn_close_modal">
+							<!--добавила код svg, чтобы повлиять на fill при наведении-->
 							<svg width="20" height="20" viewBox="0 0 16 17" fill="none" xmlns="http://www.w3.org/2000/svg">
 								<path d="M0.571083 15.5711C-0.0916244 14.9083 -0.0916258 13.8339 0.571082 13.1712L12.3133 1.42892C12.976 0.766208 14.0505 0.766209 14.7132 1.42892C15.3759 2.09162 15.3759 3.16609 14.7132 3.82879L2.97096 15.5711C2.30825 16.2338 1.23379 16.2338 0.571083 15.5711ZM0.571084 3.8288C-0.0916247 3.16609 -0.0916251 2.09163 0.571083 1.42892C1.23379 0.766209 2.30825 0.766209 2.97096 1.42892L14.7132 13.1712C15.3759 13.8339 15.3759 14.9083 14.7132 15.5711C14.0505 16.2338 12.976 16.2338 12.3133 15.5711L0.571084 3.8288Z" fill="white"/>
 							</svg>
@@ -270,8 +274,10 @@ class Modal extends HTMLElement {
 		
 		this.closeButton.addEventListener('click', () => {
 			this.backgroundBlur.style.opacity = "0";
+			// Ждем завершения анимации и только потом закрываем модальное окно
 			this.backgroundBlur.addEventListener('transitionend', () => {
 				this.dispatchEvent(new Event('close'));
+				// Читаем полученный файл, формируем таблицу и строим график
 				readCSV(this.uploadedFile.uploadedFile);
 			}, { once: true });
 		});
@@ -279,6 +285,7 @@ class Modal extends HTMLElement {
 
 	initializeElements() {
 		this.cacheDOMElements();
+		// Плавно показываем модальное окно
 		setTimeout(() => {
 			this.backgroundBlur.style.opacity = "1";
 		}, 300);
@@ -288,6 +295,7 @@ class Modal extends HTMLElement {
 		};
 		this.fileDropzone.addEventListener('file-uploaded', handleInputChange);
 		this.inputDesign.addEventListener('input-change', handleInputChange);
+		
 		this.updateSubmitButtonState();
 	}
 
@@ -310,11 +318,13 @@ class Modal extends HTMLElement {
 		this.submitButton.style.cursor = isSubmitEnabled ? 'pointer' : 'auto';
 	};
 
+	// Получаем файл и название
 	updateValues() {
 		this.uploadedFile = this.fileDropzone.getUploadedFile();
 		this.inputFileName = this.inputDesign.getInputValue();
 	}
 
+	// Функция для обновления стиля(display: none) у нескольких классов
 	hideElements(selectors) {
 		selectors.forEach(selector => {
 			const element = this.shadowRoot.querySelector(selector);
@@ -333,9 +343,9 @@ class Modal extends HTMLElement {
 
 		try {
 			const data = await uploadFile(this.uploadedFile.uploadedFile, this.inputFileName);
+			
 			const date = new Date(data.timestamp);
 			const timestamp = date.toLocaleString('en-GB', dateTime).replace(',', '');
-			
 			this.data = {
 				status: 'success',
 				filename: ((data.filename).split('_'))[2],

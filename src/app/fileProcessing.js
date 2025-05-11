@@ -16,11 +16,14 @@ export function readCSV(file) {
 		return;
 	}
 	
+	// Отображаем загрузку пока формируется таблица и строится график
 	loading.style.display = 'flex';
+	// Создаем новый экземпляр объекта FileReader, который предоставляет методы для чтения содержимого файла
 	const reader = new FileReader();
 	reader.onload = function (e) {
 		toTable(e.target.result);
 	};
+	// В случае успеха, содержимое файла будет доступно в e.target.result в обработчике onload
 	reader.readAsText(file);
 	
 	function toTable(text) {
@@ -32,6 +35,7 @@ export function readCSV(file) {
 			table.removeChild(table.lastElementChild);
 		}
 		
+		// Разбиваем строку на массив подстрок используя значение carriage в качестве разделителя
 		const rows = text.split(carriage);
 		
 		const thead = document.createElement('thead');
@@ -81,6 +85,7 @@ export function readCSV(file) {
 				tr.appendChild(td);
 				tbody.appendChild(tr);
 				
+				// Начинаем со второго столбца таблицы, поскольку с него начинаются экспериментальные данные
 				if (index > 0) {
 					chartData.push(parseFloat(dt));
 				}
@@ -91,7 +96,7 @@ export function readCSV(file) {
 		loading.style.display = 'none';
 		content.style.display = 'flex';
 		let curChart = new Chart(ctx, {
-			type: 'bar',
+			type: 'bar', // Тип графика: столбчатая диаграмма
 			data: {
 				labels: labels,
 				datasets: [{
@@ -105,7 +110,7 @@ export function readCSV(file) {
 			options: {
 				scales: {
 					y: {
-						beginAtZero: true
+						beginAtZero: true // Начало оси y с нуля
 					}
 				}
 			}
@@ -113,17 +118,20 @@ export function readCSV(file) {
 		
 		function downloadCSV() {
 			let csvContent = "data:text/csv;charset=utf-8," + head.join(";") + carriage;
+			// Проходим по каждой строке таблицы (tbody) и извлекаем данные
 			Array.from(tbody.rows).forEach(row => {
 				const rowData = Array.from(row.cells).map(cell => cell.firstChild.value).join(";");
 				csvContent += rowData + carriage;
 			});
 			
+			// Кодируем содержимое CSV для использования в URI
 			const encodedUri = encodeURI(csvContent);
 			const link = document.createElement("a");
+			// Устанавливаем атрибут href со сгенерированным URI
 			link.setAttribute("href", encodedUri);
 			link.setAttribute("download", "dear.csv");
-			document.body.appendChild(link);
 			
+			document.body.appendChild(link);
 			link.click();
 			document.body.removeChild(link);
 		}
