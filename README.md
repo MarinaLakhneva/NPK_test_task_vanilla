@@ -8,9 +8,15 @@
 
 ## Развертывание приложения
 
-1. Склонируйте репозиторий: ```git@github.com:MarinaLakhneva/NPK_test_task_vanilla.git```
-3. Перейдите в ветку master и установите зависимости с помощью: ```pnpm install```
-4. Откройте файл package.json и выполните команду dev
+1. Склонируйте репозиторий:
+   ```
+   git@github.com:MarinaLakhneva/NPK_test_task_vanilla.git
+   ```
+3. Перейдите в ветку master и установите зависимости с помощью:
+   ```
+   pnpm install
+   ```
+5. Откройте файл package.json и выполните команду dev
 
 ## Комментарии по проделанной работе
 ### Первая часть 
